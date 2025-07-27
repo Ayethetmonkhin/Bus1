@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -25,42 +25,77 @@
             background: linear-gradient(135deg, #1a68e6 0%, #6a9ef8 100%);
         }
         
-       .seat-btn {
-    width: 50px;
-    height: 50px;
-    background-color: #e0e7ff; /* light indigo */
-    border: 2px solid #6366f1; /* indigo */
-    border-radius: 8px;
-    font-weight: 600;
-    color: #3730a3;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  .seat-btn:hover {
-    background-color: #6366f1;
-    color: white;
-  }
-   .seat-btn.selected {
-    background-color: #03ff85; /* blue-600 */
-    color: white;
-    border-color: #1d4ed8;
-  }
-  .seat-btn.select{
-    background-color: #3b82f6;
-    color: white;
-    border-color: #1d4ed8;
-  }
+        .seat-btn {
+            width: 40px;
+            height: 40px;
+            background-color: #e0e7ff;
+            border: 2px solid #6366f1;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #3730a3;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            font-size: 12px;
+        }
+        
+        @media (min-width: 640px) {
+            .seat-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 14px;
+            }
+        }
+        
+        .seat-btn:hover {
+            background-color: #6366f1;
+            color: white;
+        }
+        
+        .seat-btn.selected {
+            background-color: #03ff85;
+            color: white;
+            border-color: #1d4ed8;
+        }
+        
+        .seat-btn.select {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #1d4ed8;
+        }
 
-  .seat-btn.booked {
-     background-color: #edf66f;
-    color: rgb(0, 0, 0);
-    border-color: #1d4ed8;
-  }
+        .seat-btn.booked {
+            background-color: #edf66f;
+            color: rgb(0, 0, 0);
+            border-color: #1d4ed8;
+        }
 
-  /* Add spacing for aisle after 2nd column */
-  .grid-cols-4 > button:nth-child(2n) {
-    margin-right: 16px; /* aisle space */
-  }
+        /* Mobile menu styles */
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #2f7bf5;
+            z-index: 1000;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mobile-menu.active {
+            display: block;
+        }
+        
+        .mobile-menu a {
+            display: block;
+            padding: 0.75rem 0;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .mobile-menu a:last-child {
+            border-bottom: none;
+        }
 
         /* Floating animation */
         @keyframes float {
@@ -73,7 +108,6 @@
             animation: float 4s ease-in-out infinite;
         }
         
-        
         .pulse {
             animation: pulse 2s infinite;
         }
@@ -83,20 +117,11 @@
             transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
         
-        /* Road animation */
-        @keyframes road-move {
-            from { background-position: 0 0; }
-            to { background-position: 100px 0; }
-        }
-        
-       
-
         /* Custom scrollbar */
         .custom-scroll::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
-        
         
         .custom-scroll::-webkit-scrollbar-thumb {
             background: #888;
@@ -106,7 +131,6 @@
         .custom-scroll::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
-        
         
         /* Glowing border */
         @keyframes border-glow {
@@ -119,20 +143,56 @@
             animation: border-glow 3s infinite;
         }
 
-         /* ticketprint */
+        /* ticketprint */
         @media print {
-        body * {
-            visibility: hidden;
+            body * {
+                visibility: hidden;
+            }
+            #printArea, #printArea * {
+                visibility: visible;
+            }
+            #printArea {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
         }
-        #printArea, #printArea * {
-            visibility: visible;
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .hero-text {
+                font-size: 2.5rem;
+            }
+            
+            .buslist {
+                flex-direction: column;
+            }
+            
+            .buslist > div {
+                width: 100% !important;
+            }
+            
+            .search-grid {
+                grid-template-columns: 1fr !important;
+            }
+            
+            .passenger-info-form {
+                margin-top: 1rem;
+            }
         }
-        #printArea {
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
+        
+        @media (max-width: 640px) {
+            .hero-text {
+                font-size: 2rem;
+            }
+            
+            .cta-button {
+                width: 100%;
+            }
+            
+            .feature-badge {
+                margin-bottom: 0.5rem;
+            }
         }
     </style>
 </head>
@@ -143,12 +203,12 @@
             <div class="flex justify-between items-center">
                 <div class="flex items-center space-x-3 animate__animated animate__fadeInLeft">
                     <i class="fas fa-bus text-3xl"></i>
-                    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                    <h1 class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
                         SkyWay
                     </h1>
                 </div>
                 
-                <nav class="hidden md:flex space-x-8">
+                <nav class="hidden md:flex space-x-4 lg:space-x-8">
                     <a href="#" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
                         Home
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
@@ -170,7 +230,7 @@
                     </a>
 
                     <a href="{% url 'DateByDateReport' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
-                        Report Dashboard
+                        Report
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                     </a>
                     {% endif %}
@@ -178,24 +238,41 @@
                        About
                         <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                     </a>
-
                 </nav>
                 
-                {% if user.is_authenticated %}
-                        <a href="{% url 'logoutview' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign Out</a>
+                <div class="flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'logoutview' %}" class="hidden sm:inline-block bg-white text-blue-600 px-4 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border text-sm md:text-base md:px-6">Sign Out</a>
                     {% else %}
-                        <a href="{% url 'login' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign In</a>
+                        <a href="{% url 'login' %}" class="hidden sm:inline-block bg-white text-blue-600 px-4 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border text-sm md:text-base md:px-6">Sign In</a>
                     {% endif %}
-                    <button class="md:hidden text-2xl">
+                    <button id="mobileMenuButton" class="md:hidden text-2xl">
                         <i class="fas fa-bars"></i>
                     </button>
                 </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="mobile-menu">
+                <a href="#" class="hover:text-blue-200">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'busoperator' %}" class="hover:text-blue-200">Counter</a>
+                    <a href="{% url 'routeview' %}" class="hover:text-blue-200">Routes</a>
+                    <a href="{% url 'carnumberlistview' %}" class="hover:text-blue-200">Bus</a>
+                    <a href="{% url 'DateByDateReport' %}" class="hover:text-blue-200">Report</a>
+                {% endif %}
+                <a href="{% url 'aboutview' %}" class="hover:text-blue-200">About</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logoutview' %}" class="hover:text-blue-200">Sign Out</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-blue-200">Sign In</a>
+                {% endif %}
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="gradient-bg text-white py-16 relative overflow-hidden">
+    <section class="gradient-bg text-white py-12 md:py-16 relative overflow-hidden">
         <!-- Animated background elements -->
         <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
             <div class="absolute top-20 left-10 w-20 h-20 rounded-full bg-white opacity-5 animate__animated animate__pulse animate__infinite"></div>
@@ -203,37 +280,37 @@
         
         <div class="container mx-auto px-4 relative z-10">
             <div class="flex flex-col md:flex-row items-center">
-                <div class="md:w-1/2 mb-12 md:mb-0 animate__animated animate__fadeInLeft">
-                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                <div class="md:w-1/2 mb-8 md:mb-0 animate__animated animate__fadeInLeft">
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 leading-tight hero-text">
                         Journey <span class="text-yellow-300">Simplified</span> with SkyWay
                     </h2>
-                        <p class="text-xl mb-8 opacity-90 max-w-lg text-justify">
-                            Welcome to SkyWay! In today’s fast-paced world, every second counts. SkyWay offers a quick, convenient, and reliable way to book your bus tickets anytime, anywhere — from choosing your route and seat to confirming your trip in just a few clicks.
-                        </p>
-                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
-                        <button class="bg-white text-blue-600 px-8 py-4 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-xl pulse flex items-center justify-center">
-                            <i class="fas fa-ticket-alt mr-3 text-xl"></i> Book Your Seat Now
+                    <p class="text-base md:text-xl mb-6 md:mb-8 opacity-90 max-w-lg text-justify">
+                        Welcome to SkyWay! In today's fast-paced world, every second counts. SkyWay offers a quick, convenient, and reliable way to book your bus tickets anytime, anywhere — from choosing your route and seat to confirming your trip in just a few clicks.
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 md:space-x-6">
+                        <button class="bg-white text-blue-600 px-6 py-3 md:px-8 md:py-4 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-xl pulse flex items-center justify-center text-sm md:text-base cta-button">
+                            <i class="fas fa-ticket-alt mr-2 md:mr-3 text-lg md:text-xl"></i> Book Your Seat Now
                         </button>
                     </div>
                     
-                    <div class="mt-12 flex flex-wrap gap-6">
-                        <div class="flex items-center bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                    <div class="mt-8 md:mt-12 flex flex-wrap gap-4 md:gap-6">
+                        <div class="flex items-center bg-white bg-opacity-20 px-3 py-1 md:px-4 md:py-2 rounded-full text-sm md:text-base feature-badge">
                             <i class="fas fa-wifi mr-2 text-yellow-300"></i>
                             <span>Free WiFi</span>
                         </div>
-                        <div class="flex items-center bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                        <div class="flex items-center bg-white bg-opacity-20 px-3 py-1 md:px-4 md:py-2 rounded-full text-sm md:text-base feature-badge">
                             <i class="fas fa-plug mr-2 text-yellow-300"></i>
                             <span>Charging Ports</span>
                         </div>
                     </div>
                 </div>
-                <div class="md:w-1/2 animate__animated animate__fadeInRight">
+                <div class="md:w-1/2 mt-8 md:mt-0 animate__animated animate__fadeInRight">
                     <div class="relative floating">
                         <img src="{% static 'images/travels.jpg' %}" 
                              alt="Luxury Bus" 
-                             class="rounded-2xl shadow-2xl w-full h-auto max-h-[500px] object-cover border-4 border-white transform rotate-1">
-                        <div class="absolute -bottom-5 -right-5 bg-yellow-400 text-gray-900 px-6 py-3 rounded-xl shadow-2xl font-bold text-lg flex items-center">
-                            <i class="fas fa-bolt mr-2"></i> Welcome!
+                             class="rounded-2xl shadow-2xl w-full h-auto max-h-[400px] md:max-h-[500px] object-cover border-4 border-white transform rotate-1">
+                        <div class="absolute -bottom-3 -right-3 md:-bottom-5 md:-right-5 bg-yellow-400 text-gray-900 px-4 py-2 md:px-6 md:py-3 rounded-xl shadow-2xl font-bold text-sm md:text-lg flex items-center">
+                            <i class="fas fa-bolt mr-1 md:mr-2"></i> Welcome!
                         </div>
                     </div>
                 </div>
@@ -241,24 +318,132 @@
         </div>  
     </section>
 
-    
-
-     <!-- Search Section -->
-   <section class="container mx-auto px-4 py-12 -mt-16 relative z-20">
-    <form id="searchroute">
-        <div class="bg-white rounded-2xl shadow-2xl p-8 animate__animated animate__fadeInUp">
-            <h3 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
-                <i class="fas fa-search-location mr-3 text-blue-500 text-3xl"></i> 
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-700">
-                    Where Would You Like to Go?
-                </span>
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">From</label>
-                    <select id="fromname" name="from" class="w-full p-4 border-2 border-gray-200 rounded-xl">
-                        <option>Select City</option>
+    <!-- Search Section -->
+    <section class="container mx-auto px-4 py-8 md:py-12 -mt-8 md:-mt-16 relative z-20">
+        <form id="searchroute">
+            <div class="bg-white rounded-xl md:rounded-2xl shadow-lg md:shadow-2xl p-6 md:p-8 animate__animated animate__fadeInUp">
+                <h3 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-gray-800 flex items-center">
+                    <i class="fas fa-search-location mr-2 md:mr-3 text-blue-500 text-2xl md:text-3xl"></i> 
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-blue-700">
+                        Where Would You Like to Go?
+                    </span>
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 search-grid">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1 md:mb-2">From</label>
+                        <select id="fromname" name="from" class="w-full p-3 md:p-4 border-2 border-gray-200 rounded-lg md:rounded-xl text-sm md:text-base">
+                            <option>Select City</option>
+                           <option>Yangon(ရန်ကုန်)</option>
+                            <option>Ahtet Min Hla(အထက်မင်းလှ)</option>
+                            <option>AungLan(အောင်လံ)</option>
+                            <option>Aungpan(အောင်ပန်း)</option>
+                            <option>Ayadaw(အရာတော်)</option>
+                            <option>Ayetharyar(အေးသာယာ)</option>
+                            <option>Bagan(ပုဂံ) Nyaung U(ညောင်ဦး)</option>
+                            <option>Bago(ပဲခူး)</option>
+                            <option>Bahin(ဗဟင်း)</option>
+                            <option>Banmauk(ဗန်းမောက်)</option>
+                            <option>Banmaw(ဗန်းမော်)</option>
+                            <option>Bilin(ဘီးလင်း)</option>
+                            <option>Bogale(ဘိုကလေး)</option>
+                            <option>Budalin(ဘုတလင်)</option>
+                            <option>Chauk(ချောက်)</option>
+                            <option>Chaung Thar(ချောင်းသာ)</option>
+                            <option>ChaungU(ချောင်းဦး)</option>
+                            <option>DaikU(ဒိုက်ဦး)</option>
+                            <option>Danai(တနိုင်း)</option>
+                            <option>Danubyu(ဓနုဖြူ)</option>
+                            <option>Dawei(ထားဝယ်)</option>
+                            <option>Gangaw(ဂန့်ဂေါ)</option>
+                            <option>Gwa(ဂွ)</option>
+                            <option>Hakha(ဟားခါး)</option>
+                            <option>Ham Myint Mo(ဟံမြင့်မိုရ်)</option>
+                            <option>HeHoe(ဟဲဟိုး)</option>
+                            <option>Hinthada(ဟင်္သာတ)</option>
+                            <option>Hlegu(လှည်းကူး)</option>
+                            <option>Hopin(ဟိုပင်)</option>
+                            <option>Hopong(ဟိုပုံး)</option>
+                            <option>Hpa An(ဘားအံ)</option>
+                            <option>Hpakan(ဖားကန့်)</option>
+                            <option>Hpayargyi(ဘုရားကြီး)</option>
+                            <option>Hsipaw(သီပေါ)</option>
+                            <option>Htonebo(ထုံးဘို)</option>
+                            <option>Indaw(အင်းတော်)</option>
+                            <option>Ingapu(အင်္ဂပူ)</option>
+                            <option>Kalaw(ကလော)</option>
+                            <option>Kale(ကလေး)</option>
+                            <option>Kanbalu(ကန့်ဘလူ)</option>
+                            <option>Karli(ကာလီ)</option>
+                            <option>Katha(ကသာ)</option>
+                            <option>Kawkareik(ကော့ကရိတ်)</option>
+                            <option>Kawyhaung(ကော့သောင်း)</option>
+                            <option>Khin U (ခင်ဦး)</option>
+                            <option>Koebin(ကိုးပင်)</option>
+                            <option>Kume(ကူမဲ)</option>
+                            <option>Kutkai(ကွတ်ခိုင်)</option>
+                            <option>Kyaikkami(ကျိုက်ခမီ)</option>
+                            <option>Kyainseikgyi(ကြာအင်းဆိပ်ကြီး)</option>
+                            <option>Kyangin(ကြံခင်း)</option>
+                            <option>Kyaukme(ကျောက်မဲ)</option>
+                            <option>Kyaukpadaung(ကျောက်ပတောင်း)</option>
+                            <option>Kyaiktiyo(ကျိုက်ထီးရိုး)</option>
+                            <option>Kyaukse(ကျောက်ဆည်)</option>
+                            <option>Lashio(လားရှိး)</option>
+                            <option>Laukkaing(လောက်ကိုင်)</option>
+                            <option>Letpadan(လက်ပံတန်း)</option>
+                            <option>Letpanhla(လက်ပံလှ)</option>
+                            <option>Lewe(လယ်ဝေး)</option>
+                            <option>Mabein(မဘိမ်း)</option>
+                            <option>Madaya(မတ္တရာ)</option>
+                            <option>Magway(မကွေး)</option>
+                            <option>Mahlaing(မလှိင်)</option>
+                            <option>Mandalay(မန္တလေး)</option>
+                            <option>Meiktila(မိတ္ထီလာ)</option>
+                            <option>Minbu(မင်းဘူး)</option>
+                            <option>Mogaung(မိုးကောင်း)</option>
+                            <option>Mogok(မိုးကုတ်)</option>
+                            <option>Mohnyin(မိုးညှင်း)</option>
+                            <option>Muse(မူဆယ်)</option>
+                            <option>Mya Taung(မြတောင်)</option>
+                            <option>Maung Mya(မြောင်းမြ)</option>
+                            <option>Myawaddy(မြဝတီ)</option>
+                            <option>Myeik(မြိတ်)</option>
+                            <option>Myingyan(မြင်းခြံ)</option>
+                            <option>Myinmu(မြင်းမူ)</option>
+                            <option>Myitkyina(မြစ်ကြီးနား)</option>
+                            <option>Myitnge(မြစ်ငယိ)</option>
+                            <option>Namhkan(နမ့်ခမ်း)</option>
+                            <option>Namhkok(နမ့်ခုတ်)</option>
+                            <option>Nanmati(နမ္မတီး)</option>
+                            <option>Natmauk(နတ်မောက်)</option>
+                            <option>Natogyi(နွားထိုးကြီး)</option>
+                            <option>Nay Pyi Taw(နေပြည်တော်)</option>
+                            <option>Ngapali(ငပလီ)</option>
+                            <option>Ngar O(ငါးအိုး)</option>
+                            <option>Ngwe Saung(ငွေဆောင်)</option>
+                            <option>Pyin Oo Lwin(ပြင်ဦးလွင်)</option>
+                            <option>Pyawbwe(ပျော်ဘွယ်)</option>
+                            <option>Phyu(ဖြူး)</option>
+                            <option>Popa(ပုပ္ပါး)</option>
+                            <option>Pyay(ပြည်)</option>
+                            <option>Shwe ku(ရွှေကူ)</option>
+                            <option>Shwe Bo(ရွှေဘို)</option>
+                            <option>Shwe Nyaung(ရွှေညောင်)</option>
+                            <option>Sintgaing(စဉ့်ကိုင်)</option>
+                            <option>Taunggyi(တောင်ကြီး)</option>
+                            <option>Tachileik(တာချီလိတ်)</option>
+                            <option>Ye(ရေး)</option>
+                            <option>Ye U(ရေဦး)</option>
+                            <option>Yamethin(ရမည်းသင်း)</option>
+                            <option>Wundwin(ဝမ်းတွင်း)</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1 md:mb-2">To</label>
+                        <select id="toname" name="to" class="w-full p-3 md:p-4 border-2 border-gray-200 rounded-lg md:rounded-xl text-sm md:text-base">
+                            <option>Select City</option>
                             <option>Yangon(ရန်ကုန်)</option>
                             <option>Ahtet Min Hla(အထက်မင်းလှ)</option>
                             <option>AungLan(အောင်လံ)</option>
@@ -362,258 +547,152 @@
                             <option>Ye U(ရေဦး)</option>
                             <option>Yamethin(ရမည်းသင်း)</option>
                             <option>Wundwin(ဝမ်းတွင်း)</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">To</label>
-                    <select id="toname" name="to" class="w-full p-4 border-2 border-gray-200 rounded-xl">
-                        <option>Select City</option>
-                            <option>Yangon(ရန်ကုန်)</option>
-                            <option>Ahtet Min Hla(အထက်မင်းလှ)</option>
-                            <option>AungLan(အောင်လံ)</option>
-                            <option>Aungpan(အောင်ပန်း)</option>
-                            <option>Ayadaw(အရာတော်)</option>
-                            <option>Ayetharyar(အေးသာယာ)</option>
-                            <option>Bagan(ပုဂံ) Nyaung U(ညောင်ဦး)</option>
-                            <option>Bago(ပဲခူး)</option>
-                            <option>Bahin(ဗဟင်း)</option>
-                            <option>Banmauk(ဗန်းမောက်)</option>
-                            <option>Banmaw(ဗန်းမော်)</option>
-                            <option>Bilin(ဘီးလင်း)</option>
-                            <option>Bogale(ဘိုကလေး)</option>
-                            <option>Budalin(ဘုတလင်)</option>
-                            <option>Chauk(ချောက်)</option>
-                            <option>Chaung Thar(ချောင်းသာ)</option>
-                            <option>ChaungU(ချောင်းဦး)</option>
-                            <option>DaikU(ဒိုက်ဦး)</option>
-                            <option>Danai(တနိုင်း)</option>
-                            <option>Danubyu(ဓနုဖြူ)</option>
-                            <option>Dawei(ထားဝယ်)</option>
-                            <option>Gangaw(ဂန့်ဂေါ)</option>
-                            <option>Gwa(ဂွ)</option>
-                            <option>Hakha(ဟားခါး)</option>
-                            <option>Ham Myint Mo(ဟံမြင့်မိုရ်)</option>
-                            <option>HeHoe(ဟဲဟိုး)</option>
-                            <option>Hinthada(ဟင်္သာတ)</option>
-                            <option>Hlegu(လှည်းကူး)</option>
-                            <option>Hopin(ဟိုပင်)</option>
-                            <option>Hopong(ဟိုပုံး)</option>
-                            <option>Hpa An(ဘားအံ)</option>
-                            <option>Hpakan(ဖားကန့်)</option>
-                            <option>Hpayargyi(ဘုရားကြီး)</option>
-                            <option>Hsipaw(သီပေါ)</option>
-                            <option>Htonebo(ထုံးဘို)</option>
-                            <option>Indaw(အင်းတော်)</option>
-                            <option>Ingapu(အင်္ဂပူ)</option>
-                            <option>Kalaw(ကလော)</option>
-                            <option>Kale(ကလေး)</option>
-                            <option>Kanbalu(ကန့်ဘလူ)</option>
-                            <option>Karli(ကာလီ)</option>
-                            <option>Katha(ကသာ)</option>
-                            <option>Kawkareik(ကော့ကရိတ်)</option>
-                            <option>Kawyhaung(ကော့သောင်း)</option>
-                            <option>Khin U (ခင်ဦး)</option>
-                            <option>Koebin(ကိုးပင်)</option>
-                            <option>Kume(ကူမဲ)</option>
-                            <option>Kutkai(ကွတ်ခိုင်)</option>
-                            <option>Kyaikkami(ကျိုက်ခမီ)</option>
-                            <option>Kyainseikgyi(ကြာအင်းဆိပ်ကြီး)</option>
-                            <option>Kyangin(ကြံခင်း)</option>
-                            <option>Kyaukme(ကျောက်မဲ)</option>
-                            <option>Kyaukpadaung(ကျောက်ပတောင်း)</option>
-                            <option>Kyaiktiyo(ကျိုက်ထီးရိုး)</option>
-                            <option>Kyaukse(ကျောက်ဆည်)</option>
-                            <option>Lashio(လားရှိး)</option>
-                            <option>Laukkaing(လောက်ကိုင်)</option>
-                            <option>Letpadan(လက်ပံတန်း)</option>
-                            <option>Letpanhla(လက်ပံလှ)</option>
-                            <option>Lewe(လယ်ဝေး)</option>
-                            <option>Mabein(မဘိမ်း)</option>
-                            <option>Madaya(မတ္တရာ)</option>
-                            <option>Magway(မကွေး)</option>
-                            <option>Mahlaing(မလှိင်)</option>
-                            <option>Mandalay(မန္တလေး)</option>
-                            <option>Meiktila(မိတ္ထီလာ)</option>
-                            <option>Minbu(မင်းဘူး)</option>
-                            <option>Mogaung(မိုးကောင်း)</option>
-                            <option>Mogok(မိုးကုတ်)</option>
-                            <option>Mohnyin(မိုးညှင်း)</option>
-                            <option>Muse(မူဆယ်)</option>
-                            <option>Mya Taung(မြတောင်)</option>
-                            <option>Maung Mya(မြောင်းမြ)</option>
-                            <option>Myawaddy(မြဝတီ)</option>
-                            <option>Myeik(မြိတ်)</option>
-                            <option>Myingyan(မြင်းခြံ)</option>
-                            <option>Myinmu(မြင်းမူ)</option>
-                            <option>Myitkyina(မြစ်ကြီးနား)</option>
-                            <option>Myitnge(မြစ်ငယိ)</option>
-                            <option>Namhkan(နမ့်ခမ်း)</option>
-                            <option>Namhkok(နမ့်ခုတ်)</option>
-                            <option>Nanmati(နမ္မတီး)</option>
-                            <option>Natmauk(နတ်မောက်)</option>
-                            <option>Natogyi(နွားထိုးကြီး)</option>
-                            <option>Nay Pyi Taw(နေပြည်တော်)</option>
-                            <option>Ngapali(ငပလီ)</option>
-                            <option>Ngar O(ငါးအိုး)</option>
-                            <option>Ngwe Saung(ငွေဆောင်)</option>
-                            <option>Pyin Oo Lwin(ပြင်ဦးလွင်)</option>
-                            <option>Pyawbwe(ပျော်ဘွယ်)</option>
-                            <option>Phyu(ဖြူး)</option>
-                            <option>Popa(ပုပ္ပါး)</option>
-                            <option>Pyay(ပြည်)</option>
-                            <option>Shwe ku(ရွှေကူ)</option>
-                            <option>Shwe Bo(ရွှေဘို)</option>
-                            <option>Shwe Nyaung(ရွှေညောင်)</option>
-                            <option>Sintgaing(စဉ့်ကိုင်)</option>
-                            <option>Taunggyi(တောင်ကြီး)</option>
-                            <option>Tachileik(တာချီလိတ်)</option>
-                            <option>Ye(ရေး)</option>
-                            <option>Ye U(ရေဦး)</option>
-                            <option>Yamethin(ရမည်းသင်း)</option>
-                            <option>Wundwin(ဝမ်းတွင်း)</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-2">Departure</label>
-                    <input id="departure_date" name="date" type="date" class="w-full p-4 border-2 border-gray-200 rounded-xl">
-                </div>
-                
-                <div class="flex items-end">
-                    <button id="searchroutebtn" type="button" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700">
-                        <i class="fas fa-search mr-2"></i> Search Buses
-                    </button>
+                            <!-- Other options remain the same -->
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1 md:mb-2">Departure</label>
+                        <input id="departure_date" name="date" type="date" class="w-full p-3 md:p-4 border-2 border-gray-200 rounded-lg md:rounded-xl text-sm md:text-base">
+                    </div>
+                    
+                    <div class="flex items-end">
+                        <button id="searchroutebtn" type="button" class="w-full bg-blue-600 text-white py-3 md:py-4 rounded-lg md:rounded-xl font-bold hover:bg-blue-700 text-sm md:text-base">
+                            <i class="fas fa-search mr-1 md:mr-2"></i> Search Buses
+                        </button>
+                    </div>
                 </div>
             </div>
+        </form>
+    </section>
+
+    <!-- Modal -->
+    <div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 hidden">
+        <div class="bg-white p-6 md:p-8 rounded-xl md:rounded-2xl w-full max-w-md mx-4 shadow-xl relative border border-blue-200">
+            <h2 class="text-xl md:text-2xl font-semibold text-blue-600 mb-3 md:mb-4 text-center">
+                <i class="fas fa-wallet mr-2 text-blue-500"></i> Payment Required
+            </h2>
+
+            <input id="seatbtnid" type="number" name="seatid" value="0" hidden>
+
+            <div class="flex justify-end space-x-3 mt-4 md:mt-6">
+                <button id="closeModalBtn" class="bg-gray-100 text-gray-700 px-3 py-1 md:px-4 md:py-2 rounded-lg hover:bg-gray-200 shadow-sm transition duration-150 text-sm md:text-base">
+                    Close
+                </button>
+            </div>
         </div>
-    </form>
-</section>
-
-<!-- Modal -->
-<div id="paymentModal" class="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50 hidden">
-  <div class="bg-white p-8 rounded-2xl w-full max-w-md shadow-xl relative border border-blue-200">
-
-    <h2 class="text-2xl font-semibold text-blue-600 mb-4 text-center">
-      <i class="fas fa-wallet mr-2 text-blue-500"></i> Payment Required
-    </h2>
-
-    <input id="seatbtnid" type="number" name="seatid" value="0" hidden>
-
-    <div class="flex justify-end space-x-3 mt-6">
-      <button id="closeModalBtn" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 shadow-sm transition duration-150">
-        Close
-      </button>
     </div>
 
-  </div>
-</div>
+    <!-- Ticket Table -->
+    <table id="toPrint1" class="hidden">
+        <thead>
+            <tr>
+                <th id="opname" colspan="6" style="text-align:center;">🚍Elite<br>normal</th>
+            </tr>
+            <tr>
+                <th>📍From</th>
+                <th>📍To</th>
+                <th>📅Date</th>
+                <th>⏰Time</th>
+                <th>💺Seat</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Yangon</td>
+                <td>Mandalay</td>
+                <td>13-07-2025</td>
+                <td>6:00 AM</td>
+                <td>B2</td>
+            </tr>
+            <tr>
+                <th colspan="2">👤Name</th>
+                <td colspan="4">Aye Thet Mon Khin</td>
+            </tr>
+            <tr>
+                <th colspan="2">🆔NRC</th>
+                <td colspan="4">12/ABC(N)123456</td>
+            </tr>
+            <tr>
+                <th colspan="2">📞Phone</th>
+                <td colspan="4">09-425678789</td>
+            </tr>
+        </tbody>
+    </table>
 
-<!-- Ticket Table -->
+    <!-- Bus Container -->
+    <div id="bus-container" class="container mx-auto px-4 py-6"></div>
 
-  <table id="toPrint1" class="hidden">
-  <thead>
-    <tr>
-      <th id="opname" colspan="6" style="text-align:center;">🚍Elite<br>normal</th>
-    </tr>
-    <tr>
-      <th>📍From</th>
-      <th>📍To</th>
-      <th>📅Date</th>
-      <th>⏰Time</th>
-      <th>💺Seat</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Yangon</td>
-      <td>Mandalay</td>
-      <td>13-07-2025</td>
-      <td>6:00 AM</td>
-      <td>B2</td>
-    </tr>
-    <tr>
-      <th colspan="2">👤Name</th>
-      <td colspan="4">Aye Thet Mon Khin</td>
-    </tr>
-    <tr>
-      <th colspan="2">🆔NRC</th>
-      <td colspan="4">12/ABC(N)123456</td>
-    </tr>
-    <tr>
-        <th colspan="2">📞Phone</th>
-        <td colspan="4">09-425678789</td>
-    </tr>
-  </tbody>
-</table>
-
-
-
-<!-- <div class="flex gap-6 max-w-7xl mx-auto px-4">
-    <div id="bus-container" class="w-4/5"> -->
-    <div id="bus-container">
-        
     <!-- Final CTA -->
-    <section class="gradient-bg-dark text-white py-20 relative overflow-hidden">
+    <section class="gradient-bg-dark text-white py-12 md:py-20 relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-full opacity-10">
-            <div class="absolute top-1/4 left-1/4 w-40 h-40 rounded-full bg-white animate__animated animate__pulse animate__infinite"></div>
-            <div class="absolute bottom-1/3 right-1/4 w-32 h-32 rounded-full bg-white animate__animated animate__pulse animate__infinite animate__delay-1s"></div>
+            <div class="absolute top-1/4 left-1/4 w-20 h-20 md:w-40 md:h-40 rounded-full bg-white animate__animated animate__pulse animate__infinite"></div>
+            <div class="absolute bottom-1/3 right-1/4 w-16 h-16 md:w-32 md:h-32 rounded-full bg-white animate__animated animate__pulse animate__infinite animate__delay-1s"></div>
         </div>
         
         <div class="container mx-auto px-4 text-center relative z-10">
-            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready for Your Next Adventure?</h2>
-            <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+            <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6">Ready for Your Next Adventure?</h2>
+            <p class="text-base md:text-xl mb-6 md:mb-8 max-w-2xl mx-auto opacity-90">
                 Now you can get our service now.
             </p>
-
         </div>
-
-        </div>
-
-        </div>
-        
-        <!-- Aung Mingalar Terminal Map Section -->
-        <section class="bg-white py-16">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6">Aung Mingalar Bus Terminal</h2>
-                <p class="text-lg text-gray-600 mb-8">
-                    Here's Aung Mingalar Bus exact location in Yangon. You can plan your route easily with Google Maps.
-                </p>
-                
-                <div class="flex justify-center">
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3818.3949637196316!2d96.12935087590564!3d16.893588118590097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30c194f3d87c8a13%3A0x57403de0c03be31f!2sAung%20Mingalar%20Highway%20Bus%20Terminal!5e0!3m2!1sen!2smm!4v1721652461876!5m2!1sen!2smm"
-                        class="w-full max-w-4xl h-[450px] rounded-lg shadow-lg"
-                        style="border:0;"
-                        allowfullscreen=""
-                        loading="lazy"
-                        referrerpolicy="no-referrer-when-downgrade"
-                    ></iframe>
-                </div>
+    </section>
+    
+    <!-- Aung Mingalar Terminal Map Section -->
+    <section class="bg-white py-8 md:py-16">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4 md:mb-6">Aung Mingalar Bus Terminal</h2>
+            <p class="text-base md:text-lg text-gray-600 mb-6 md:mb-8">
+                Here's Aung Mingalar Bus exact location in Yangon. You can plan your route easily with Google Maps.
+            </p>
+            
+            <div class="flex justify-center">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3818.3949637196316!2d96.12935087590564!3d16.893588118590097!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30c194f3d87c8a13%3A0x57403de0c03be31f!2sAung%20Mingalar%20Highway%20Bus%20Terminal!5e0!3m2!1sen!2smm!4v1721652461876!5m2!1sen!2smm"
+                    class="w-full h-64 sm:h-80 md:h-[450px] rounded-lg shadow-lg"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"
+                ></iframe>
             </div>
-        </section>
-
+        </div>
     </section>
 
-
     <script>
+        // Mobile menu toggle
+        document.getElementById('mobileMenuButton').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuButton = document.getElementById('mobileMenuButton');
+            
+            if (!mobileMenu.contains(event.target) && !menuButton.contains(event.target)) {
+                mobileMenu.classList.remove('active');
+            }
+        });
+
         // Bus moving animation
         document.addEventListener('DOMContentLoaded', function() {
             const bus = document.querySelector('.bus-move');
-            let position = -150;
-            let direction = 1;
-            
-            function animateBus() {
-                position += direction * 3;
-                if (position > window.innerWidth + 150) {
-                    position = -150;
+            if (bus) {
+                let position = -150;
+                let direction = 1;
+                
+                function animateBus() {
+                    position += direction * 3;
+                    if (position > window.innerWidth + 150) {
+                        position = -150;
+                    }
+                    bus.style.transform = `translateX(${position}px)`;
+                    requestAnimationFrame(animateBus);
                 }
-                bus.style.transform = `translateX(${position}px)`;
-                requestAnimationFrame(animateBus);
+                
+                animateBus();
             }
-            
-            animateBus();
-            
             
             // Add click effect to buttons
             const buttons = document.querySelectorAll('button');
@@ -630,409 +709,364 @@
             });
         });
 
-
-         $(document).ready(function(){
-        $('#searchroutebtn').click(
-            function(){
-                 const fromname = $('#fromname').val();
-                  const toname = $('#toname').val();
-                   const departure_date = $('#departure_date').val();
-                  $.ajax({
-                url: "/search/",
-                method: "GET",
-                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
-                data: { fromname: fromname, toname:toname, departure_date:departure_date}, //ဒီအပိုင်းလေးက search ရှာတဲ့အပိုင်းပါ မေ့ရင်စာအုပ်မှာမှတ်ထားတယ်ပြန်ကြည့်နော်
-                success: function (response) {
-                    console.log(response) //searchအပိုင်းရှာပီးတာနဲ့ငါတို့ရှာတဲ့busကျလာမယ် ငါတို့ရှာလိုက်တဲ့dateနဲ့ပတ်သက်ပြီးတော့ပေါ့ အဲ့တာကိုဒီမှာရေးကြမယ်
-                    $('#bus-container').empty();
-                    response.busroute.forEach(function(i) {
-
-                        $('#bus-container').append(`
-                          <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
-                            <div class="buslist md:flex">
-                            <div class="md:w-1/4 bg-blue-50 p-6 flex flex-col items-center justify-center">
-                                <div class="text-center mb-4">
-                                <img src="https://cdn-icons-png.flaticon.com/512/741/741411.png" alt="Bus Icon" class="w-16 h-16 mx-auto">
-                                <h4 class="font-bold text-lg mt-2">${i.bus_name}</h4>
-                                <p class="text-sm text-gray-600">${ i.bus_type }</p>
-                                </div>
-                                <div class="text-center">
-                                <input type="text" name="busid"  value = "${i.busid}" hidden>
-                                <p class="text-2xl font-bold text-blue-600">Car Number</p>
-                                <p class="text-sm text-gray-500">${i.bus_number}</p>
-                                </div>
-                            </div>
-
-                            <div class="md:w-2/4 p-6 border-r border-gray-200">
-                                <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-
-                                    <p class="text-sm text-black-500">📍from_location</p>
-                                    <p class="font-bold">${i.from_location}</p>
-                                </div>
-
-                                <div>
-
-                                    <p class="text-sm text-black-500">$Price</p>
-                                    <p class="font-bold">${i.price}</p>
-                                </div>
-
-                                <div>
-                                    <p class="text-sm  text-black-500">📍to_loaction</p>
-                                    <p class="font-bold text-black-500">${i.to_location}</p>
-                                </div>
-
-                                
-                                <div>
-                                    <p class="text-sm text-black-500">Time</p>
-                                    <p class="text-sm font-bold text-black-500">${formatTime24to12(i.time)}</p>
-                                </div>
-
-                                </div>
-
-                                <div class="flex items-center space-x-2 mb-2">
-                                <i class="fas fa-wifi text-blue-500"></i>
-                                <span class="text-sm">Free WiFi</span>
-                                </div>
-
-                                <div class="flex items-center space-x-2 mb-2">
-                                <i class="fas fa-snowflake text-blue-500"></i>
-                                <span class="text-sm">AC</span>
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                <i class="fas fa-tv text-blue-500"></i>
-                                <span class="text-sm">Entertainment</span>
-                                </div>
-                            </div>
-
-                            <div class="md:w-1/4 p-6 flex flex-col justify-center seat">
-                                 <input class= "seatviewid" type="number" name="seatid"  value = "${i.sid}" hidden>
-                                <button data-busid="${i.busid}" data-seatid="${i.sid}" onclick="seatviewbtn(this)" class="viewseatbtn bg-blue-600 text-white py-3 px-6 rounded-lg font-bold mb-3 hover:bg-blue-700 transition">
-                                View Seats
-                                </button> 
-                            </div>
-                            </div>
-
-                            <!-- Seat Selection Dropdown -->
-                            
-
-                            <div id="seat-section-${i.sid}" class="seatgp hidden border-t border-gray-200 p-6 bg-gray-50">
-                            <div class="grid md:grid-cols-2 gap-6">
-                                <!-- Seat Layout -->
-                                <div>
-                                <h4 class="text-lg font-semibold mb-2">Select Seat</h4>
-                                <input type="number" name="seatid"  value = "${i.sid}" hidden>
-                                <div id ="seatId-${i.sid}" class="seatlist grid grid-cols-4 gap-4 max-w-xs">
-                            </div>
-                            </div>
-
-                            <!-- Passenger Info -->
-                            <form  class="bg-white p-4 rounded-lg border passengerFm" id="form-1">
-                            <h4 class="text-lg font-semibold mb-2">Passenger Information</h4>
-
-
-                            <input type="hidden" name="route" value = "0">
-
-                            <div class="mb-2">
-                                <label class="block text-sm font-medium">Name</label>
-                                <input type="text" id="pinput-${i.sid}" name="pname" class="w-full border px-3 py-2 rounded" required>
-                            </div>
-
-                            <div class="mb-2">
-                                <label class="block text-sm font-medium">NRC</label>
-                                <input type="text" id="pinputnrc-${i.sid}" name="pnrc" class="w-full border px-3 py-2 rounded" required>
-                            </div>
-
-                            <div class="mb-2">
-                                <label class="block text-sm font-medium">Phone</label>
-                                <input type="text" id="pinputpno-${i.sid}" name="Pphone" class="w-full border px-3 py-2 rounded" required>
-                            </div>
-
-                            <!-- Gender Selection -->
-                            <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-semibold mb-2">Gender</label>
-                            <div  id="pinputgender-${i.sid}" class="flex items-center space-x-6">
-                                <label class="flex items-center">
-                                <input type="radio" name="gender-${i.sid}" value="male" class="text-pink-500 focus:ring-pink-400">
-                                <span class="ml-2 text-gray-700">Male</span>
-                                </label>
-                                <label class="flex items-center">
-                                <input type="radio" name="gender-${i.sid}" value="female" class="text-pink-500 focus:ring-pink-400">
-                                <span class="ml-2 text-gray-700">Female</span>
-                                </label>
-                            </div>
-                            </div>
-
-                            <!-- Traveller Type Selection -->
-                            <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-semibold mb-2">Traveller Type</label>
-                            <div id="pinputtravellertype-${i.sid}" class="flex items-center space-x-6">
-                                <label class="flex items-center">
-                                <input type="radio" name="traveller_type-${i.sid}" value="local" class="text-pink-500 focus:ring-pink-400" required>
-                                <span class="ml-2 text-gray-700">Local Traveller</span>
-                                </label>
-                                <label class="flex items-center">
-                                <input type="radio" name="traveller_type-${i.sid}" value="foreign" class="text-pink-500 focus:ring-pink-400" required>
-                                <span class="ml-2 text-gray-700">Foreign Traveller</span>
-                                </label>
-                            </div>
-                            </div>
-
-
-                            <!-- Special Request Field -->
-                                <div class="mb-6">
-                                <label for="" class="block text-gray-700 text-sm font-semibold mb-2">
-                                    Special Request
-                                </label>
-                                <textarea id="pinputrequest-${i.sid}" name="prequest" rows="4" placeholder="Enter any notes or requests..."
-                                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm resize-none">                                </textarea>
-                                </div>
-
-
-                           <button id="confirmBtn" type="button" onclick="confirmBookingbtn(this, ${i.sid})" class="bg-blue-600 text-white px-4 py-2 mt-3 rounded hover:bg-blue-700">
-                                Confirm Booking
-                            </button>
-
-                            </form>
-                            </div>
-                        </div>
-                        </div>
-                         `);
-                          });
+        $(document).ready(function(){
+            $('#searchroutebtn').click(
+                function(){
+                    const fromname = $('#fromname').val();
+                    const toname = $('#toname').val();
+                    const departure_date = $('#departure_date').val();
                     
-                },
-                error:function (response){
-                    alert('error')
+                    $.ajax({
+                        url: "/search/",
+                        method: "GET",
+                        data: { fromname: fromname, toname:toname, departure_date:departure_date},
+                        success: function (response) {
+                            console.log(response);
+                            $('#bus-container').empty();
+                            
+                            response.busroute.forEach(function(i) {
+                                $('#bus-container').append(`
+                                    <div class="bg-white rounded-lg md:rounded-xl shadow-md overflow-hidden mb-4 md:mb-6">
+                                        <div class="buslist md:flex">
+                                            <div class="md:w-1/4 bg-blue-50 p-4 md:p-6 flex flex-col items-center justify-center">
+                                                <div class="text-center mb-3 md:mb-4">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/741/741411.png" alt="Bus Icon" class="w-12 h-12 md:w-16 md:h-16 mx-auto">
+                                                    <h4 class="font-bold text-base md:text-lg mt-1 md:mt-2">${i.bus_name}</h4>
+                                                    <p class="text-xs md:text-sm text-gray-600">${i.bus_type}</p>
+                                                </div>
+                                                <div class="text-center">
+                                                    <input type="text" name="busid" value="${i.busid}" hidden>
+                                                    <p class="text-lg md:text-xl font-bold text-blue-600">Car Number</p>
+                                                    <p class="text-xs md:text-sm text-gray-500">${i.bus_number}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="md:w-2/4 p-4 md:p-6 border-r border-gray-200">
+                                                <div class="grid grid-cols-2 gap-3 md:gap-4 mb-3 md:mb-4">
+                                                    <div>
+                                                        <p class="text-xs md:text-sm text-black-500">📍from_location</p>
+                                                        <p class="font-bold text-sm md:text-base">${i.from_location}</p>
+                                                    </div>
+
+                                                    <div>
+                                                        <p class="text-xs md:text-sm text-black-500">$Price</p>
+                                                        <p class="font-bold text-sm md:text-base">${i.price}</p>
+                                                    </div>
+
+                                                    <div>
+                                                        <p class="text-xs md:text-sm text-black-500">📍to_loaction</p>
+                                                        <p class="font-bold text-sm md:text-base text-black-500">${i.to_location}</p>
+                                                    </div>
+
+                                                    <div>
+                                                        <p class="text-xs md:text-sm text-black-500">Time</p>
+                                                        <p class="text-xs md:text-sm font-bold text-black-500">${formatTime24to12(i.time)}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex items-center space-x-2 mb-1 md:mb-2">
+                                                    <i class="fas fa-wifi text-blue-500 text-sm md:text-base"></i>
+                                                    <span class="text-xs md:text-sm">Free WiFi</span>
+                                                </div>
+
+                                                <div class="flex items-center space-x-2 mb-1 md:mb-2">
+                                                    <i class="fas fa-snowflake text-blue-500 text-sm md:text-base"></i>
+                                                    <span class="text-xs md:text-sm">AC</span>
+                                                </div>
+
+                                                <div class="flex items-center space-x-2">
+                                                    <i class="fas fa-tv text-blue-500 text-sm md:text-base"></i>
+                                                    <span class="text-xs md:text-sm">Entertainment</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="md:w-1/4 p-4 md:p-6 flex flex-col justify-center seat">
+                                                <input class="seatviewid" type="number" name="seatid" value="${i.sid}" hidden>
+                                                <button data-busid="${i.busid}" data-seatid="${i.sid}" onclick="seatviewbtn(this)" class="viewseatbtn bg-blue-600 text-white py-2 px-4 md:py-3 md:px-6 rounded-lg font-bold mb-2 md:mb-3 hover:bg-blue-700 transition text-sm md:text-base">
+                                                    View Seats
+                                                </button> 
+                                            </div>
+                                        </div>
+
+                                        <!-- Seat Selection Dropdown -->
+                                        <div id="seat-section-${i.sid}" class="seatgp hidden border-t border-gray-200 p-4 md:p-6 bg-gray-50">
+                                            <div class="grid md:grid-cols-2 gap-4 md:gap-6">
+                                                <!-- Seat Layout -->
+                                                <div>
+                                                    <h4 class="text-base md:text-lg font-semibold mb-2">Select Seat</h4>
+                                                    <input type="number" name="seatid" value="${i.sid}" hidden>
+                                                    <div id="seatId-${i.sid}" class="seatlist grid grid-cols-4 gap-3 md:gap-4 max-w-xs">
+                                                    </div>
+                                                </div>
+
+                                                <!-- Passenger Info -->
+                                                <form class="bg-white p-3 md:p-4 rounded-lg border passengerFm" id="form-1">
+                                                    <h4 class="text-base md:text-lg font-semibold mb-2">Passenger Information</h4>
+                                                    <input type="hidden" name="route" value="0">
+
+                                                    <div class="mb-2">
+                                                        <label class="block text-xs md:text-sm font-medium">Name</label>
+                                                        <input type="text" id="pinput-${i.sid}" name="pname" class="w-full border px-2 py-1 md:px-3 md:py-2 rounded text-sm md:text-base" required>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="block text-xs md:text-sm font-medium">NRC</label>
+                                                        <input type="text" id="pinputnrc-${i.sid}" name="pnrc" class="w-full border px-2 py-1 md:px-3 md:py-2 rounded text-sm md:text-base" required>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="block text-xs md:text-sm font-medium">Phone</label>
+                                                        <input type="text" id="pinputpno-${i.sid}" name="Pphone" class="w-full border px-2 py-1 md:px-3 md:py-2 rounded text-sm md:text-base" required>
+                                                    </div>
+
+                                                    <!-- Gender Selection -->
+                                                    <div class="mb-4 md:mb-6">
+                                                        <label class="block text-gray-700 text-xs md:text-sm font-semibold mb-1 md:mb-2">Gender</label>
+                                                        <div id="pinputgender-${i.sid}" class="flex items-center space-x-4 md:space-x-6">
+                                                            <label class="flex items-center">
+                                                                <input type="radio" name="gender-${i.sid}" value="male" class="text-pink-500 focus:ring-pink-400">
+                                                                <span class="ml-1 md:ml-2 text-gray-700 text-xs md:text-sm">Male</span>
+                                                            </label>
+                                                            <label class="flex items-center">
+                                                                <input type="radio" name="gender-${i.sid}" value="female" class="text-pink-500 focus:ring-pink-400">
+                                                                <span class="ml-1 md:ml-2 text-gray-700 text-xs md:text-sm">Female</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Traveller Type Selection -->
+                                                    <div class="mb-4 md:mb-6">
+                                                        <label class="block text-gray-700 text-xs md:text-sm font-semibold mb-1 md:mb-2">Traveller Type</label>
+                                                        <div id="pinputtravellertype-${i.sid}" class="flex flex-col space-y-2 md:flex-row md:items-center md:space-y-0 md:space-x-4 md:space-x-6">
+                                                            <label class="flex items-center">
+                                                                <input type="radio" name="traveller_type-${i.sid}" value="local" class="text-pink-500 focus:ring-pink-400" required>
+                                                                <span class="ml-1 md:ml-2 text-gray-700 text-xs md:text-sm">Local Traveller</span>
+                                                            </label>
+                                                            <label class="flex items-center">
+                                                                <input type="radio" name="traveller_type-${i.sid}" value="foreign" class="text-pink-500 focus:ring-pink-400" required>
+                                                                <span class="ml-1 md:ml-2 text-gray-700 text-xs md:text-sm">Foreign Traveller</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Special Request Field -->
+                                                    <div class="mb-4 md:mb-6">
+                                                        <label for="" class="block text-gray-700 text-xs md:text-sm font-semibold mb-1 md:mb-2">
+                                                            Special Request
+                                                        </label>
+                                                        <textarea id="pinputrequest-${i.sid}" name="prequest" rows="3" placeholder="Enter any notes or requests..."
+                                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg md:rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm resize-none text-sm md:text-base"></textarea>
+                                                    </div>
+
+                                                    <button id="confirmBtn" type="button" onclick="confirmBookingbtn(this, ${i.sid})" class="bg-blue-600 text-white px-3 py-1 md:px-4 md:py-2 mt-2 md:mt-3 rounded hover:bg-blue-700 text-sm md:text-base">
+                                                        Confirm Booking
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `);
+                            });
+                        },
+                        error: function(response) {
+                            alert('Error loading bus data');
+                        }
+                    });
                 }
-            
-            });
-            }
-        )
-            
-
-    }); //ready function end
-
-     //select seat with blue color
-    $(document).on('click', '.seat-btn', function () {
-          if ($(this).hasClass('selected')) {
-              return;               // လူရှိပြီး seat ရွေးခွင့်မပေး
-          }
-          $(this).toggleClass('select');  // user ရွေးတဲ့ seat ကို toggle လုပ်
-      });
-
-
-  function formatTime24to12(time24) {
-      if (!time24) return "";
-      const [hourStr, minuteStr] = time24.split(':');
-      let hour = parseInt(hourStr);
-      const minute = minuteStr;
-      const ampm = hour >= 12 ? 'PM' : 'AM';
-      hour = hour % 12 || 12;
-      return `${hour}:${minute} ${ampm}`;
-  }
-
-  function seatviewbtn(element){
-    const bus_id =$(element).data('busid');                      
-    const currentdiv = $(element).closest('.seat');              
-    const sid = currentdiv.find("input[name='seatid']").val();   
-    // toggleseatbtn();
-    toggleSeatSection('seat-section-'+sid);             
-    seatview(bus_id,sid);                              
-    // clearselectedSeatList();
-    localStorage.removeItem('selectedSeatList');      
-  }
-
-  function toggleSeatSection(sid) {
-
-    const section = document.getElementById(sid);
-    section.classList.toggle('hidden');
-  }
-
-  function seatview(bus_id,sid){
-     $.ajax({
-        url: '/get_seats/',                
-        method: 'GET',
-        data: { bus_id: bus_id, sid:sid },           
-        success: function(response) {       
-            
-            console.log(response.bus_type);
-            if  (response.bus_type == 'vip'){
-            //    $(selector).addClass(className);
-            // $(selector).removeClass(class_name, function(index, current_class_name))
-            $('#seatId-'+sid).removeClass("grid-cols-4");  //seat for normal 
-            $('#seatId-'+sid).addClass("grid-cols-3"); //seat for vip
-            }
-            $('#seatId-'+sid).empty();      
-             response.seats.forEach(function(i) { 
-                if (i.seat_status ==1) {     //select seat green book or selected
-
-                      $('#seatId-'+sid).append(`
-                        <button class="seat-btn "  data-routeId="${sid}" data-busnameid="${bus_id}" data-sid="${i.id}">${i.seat_number}</button>`)
-
-                } 
-                    else if(i.seat_status ==2) {     //select seat green book or selected
-
-                      $('#seatId-'+sid).append(`
-                        <button class="seat-btn booked"  data-routeId="${sid}" data-busnameid="${bus_id}" data-sid="${i.id}">${i.seat_number}</button>`)
-
-                } 
-                else{
-                    $('#seatId-'+sid).append(`
-                        <button class="seat-btn selected"  data-routeId="${sid}" data-busnameid="${bus_id}" data-sid="${i.id}">${i.seat_number}</button>`)
-
-                }       
-             
-             })
-        },
-    });
-}
-
-
-function confirmBookingbtn(btn, sid) {      //add btn
-    let abc = "#seat-section-" + sid;
-    let selectroute = abc + " .seat-btn.select";  //fix  "#seat-section-"+sid+" "+".seat-btn.selected";
-    let pinput = "#pinput-" + sid;
-    let pinputnrc = "#pinputnrc-" + sid;
-    let pinputpno = "#pinputpno-" + sid;
-    // Get selected gende
-    let genderSelector = `input[name="gender-${sid}"]:checked`;
-    let genderVal = $(genderSelector).val();
-    // Get selected traveller type
-    let travellerSelector = `input[name="traveller_type-${sid}"]:checked`;
-    let travellerVal = $(travellerSelector).val();
-    let pinputrequest = "#pinputrequest-" + sid;
-
-
-    // console.log(abc);
-    const currenttr = $(btn).closest(abc); // btn is the button element now in this fix this to btn
- 
-    var pname = $(pinput).val();
-    var pnrc = $(pinputnrc).val();
-    var Pphone = $(pinputpno).val();
-    var prequest = $(pinputrequest).val();
-  
-
-
-    const selectedSeats = $(selectroute);     
-    const seatList = JSON.parse(localStorage.getItem('selectedSeatList')) || [];    
-    localStorage.setItem('selectedSeatList', JSON.stringify(seatList));       
-    
-    selectedSeats.each(function() {           
-        seatsid = $(this).data('sid')        
-        seatList.push({                      
-            seat_number : seatsid,
-            pname:pname,
-            pnrc:pnrc, 
-            Pphone:Pphone,
-            pgender: genderVal,
-            ptravellertype:travellerVal,
-            prequest:prequest,
-            routeid:sid
+            );
         });
+
+        //select seat with blue color
+        $(document).on('click', '.seat-btn', function () {
+            if ($(this).hasClass('selected')) {
+                return;               // လူရှိပြီး seat ရွေးခွင့်မပေး
+            }
+            $(this).toggleClass('select');  // user ရွေးတဲ့ seat ကို toggle လုပ်
+        });
+
+        function formatTime24to12(time24) {
+            if (!time24) return "";
+            const [hourStr, minuteStr] = time24.split(':');
+            let hour = parseInt(hourStr);
+            const minute = minuteStr;
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            hour = hour % 12 || 12;
+            return `${hour}:${minute} ${ampm}`;
+        }
+
+        function seatviewbtn(element){
+            const bus_id = $(element).data('busid');                      
+            const currentdiv = $(element).closest('.seat');              
+            const sid = currentdiv.find("input[name='seatid']").val();   
+            toggleSeatSection('seat-section-'+sid);             
+            seatview(bus_id,sid);                              
+            localStorage.removeItem('selectedSeatList');      
+        }
+
+        function toggleSeatSection(sid) {
+            const section = document.getElementById(sid);
+            section.classList.toggle('hidden');
+        }
+
+        function seatview(bus_id,sid){
+            $.ajax({
+                url: '/get_seats/',                
+                method: 'GET',
+                data: { bus_id: bus_id, sid:sid },           
+                success: function(response) {       
+                    console.log(response.bus_type);
+                    if (response.bus_type == 'vip'){
+                        $('#seatId-'+sid).removeClass("grid-cols-4");  //seat for normal 
+                        $('#seatId-'+sid).addClass("grid-cols-3"); //seat for vip
+                    }
+                    $('#seatId-'+sid).empty();      
+                    response.seats.forEach(function(i) { 
+                        if (i.seat_status ==1) {     //select seat green book or selected
+                            $('#seatId-'+sid).append(`
+                                <button class="seat-btn" data-routeId="${sid}" data-busnameid="${bus_id}" data-sid="${i.id}">${i.seat_number}</button>`)
+                        } 
+                        else if(i.seat_status ==2) {     //select seat green book or selected
+                            $('#seatId-'+sid).append(`
+                                <button class="seat-btn booked" data-routeId="${sid}" data-busnameid="${bus_id}" data-sid="${i.id}">${i.seat_number}</button>`)
+                        } 
+                        else {
+                            $('#seatId-'+sid).append(`
+                                <button class="seat-btn selected" data-routeId="${sid}" data-busnameid="${bus_id}" data-sid="${i.id}">${i.seat_number}</button>`)
+                        }       
+                    });
+                },
+            });
+        }
+
+        function confirmBookingbtn(btn, sid) {      //add btn
+            let abc = "#seat-section-" + sid;
+            let selectroute = abc + " .seat-btn.select";  //fix  "#seat-section-"+sid+" "+".seat-btn.selected";
+            let pinput = "#pinput-" + sid;
+            let pinputnrc = "#pinputnrc-" + sid;
+            let pinputpno = "#pinputpno-" + sid;
+            // Get selected gende
+            let genderSelector = `input[name="gender-${sid}"]:checked`;
+            let genderVal = $(genderSelector).val();
+            // Get selected traveller type
+            let travellerSelector = `input[name="traveller_type-${sid}"]:checked`;
+            let travellerVal = $(travellerSelector).val();
+            let pinputrequest = "#pinputrequest-" + sid;
+
+            const currenttr = $(btn).closest(abc); // btn is the button element now in this fix this to btn
         
-    });
-   
-    console.log( JSON.stringify(seatList))
-
-    // Send booking data to Django backend
-    $.ajax({  
-        url: '/confirm/' + sid,
-        method: 'POST',
-        data: JSON.stringify(seatList),  // fix seatList to this JSON.stringify(seatList)
-        contentType: 'application/json',
-        dataType: 'json',
-        headers: {
-            'X-CSRFToken': '{{ csrf_token }}'
-        },
-        success: function(response) {
-             if (response.success) {
+            var pname = $(pinput).val();
+            var pnrc = $(pinputnrc).val();
+            var Pphone = $(pinputpno).val();
+            var prequest = $(pinputrequest).val();
+        
+            const selectedSeats = $(selectroute);     
+            const seatList = JSON.parse(localStorage.getItem('selectedSeatList')) || [];    
+            localStorage.setItem('selectedSeatList', JSON.stringify(seatList));       
             
-            alert('Booking successful!');
-            $('#toPrint1').empty();
-            response.cprint.forEach(function(i) { 
-            $('#toPrint1').append(`
-              <thead>
-                <tr>
-                <<th colspan="6" class="text-center py-4 bg-green-100 text-lg">🚍${i.Operator}<br>${i.Bus_type}<br><p>This is Online Booking</P></th>
-    
-                </tr>
-                <tr>
-                <th>📍From</th>
-                <th>📍To</th>
-                <th>📅Date</th>
-                <th>⏰Time</th>
-                <th>💺Seat</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                <td>${i.from_location}</td>
-                <td>${i.to_location}</td>
-                <td>${i.Date}</td>
-                <td>${i.Time}</td>
-                <td>${i.Seat}</td>
-                <td></td>
-                <td></td>
-                </tr>
-                <tr>
-                <th colspan="2">👤Name</th>
-                <td colspan="4">${i.Name}</td>
-                </tr>
-                <tr>
-                <th colspan="2">🆔NRC</th>
-                <td colspan="4">${i.Nrc}</td>
-                </tr>
-                <tr>
-                <th colspan="2">📞Phone</th>
-                <td colspan="4">${i.Phone}</td>
-                </tr>
-                <tr>
-                <tr>
-                <tr>
-                <td colspan="6" style="text-align:center; padding-top: 20px; font-weight: bold; font-size: 1.2rem; color: #0a5274;">
-                    Thank you for buying ticket 🙏
-                </td>
-                </tr>
-            </tbody>
-             `);
-             })
-            printTable()
-            location.reload();
-            // console.log('hello')
-             }
-       
-    }
-});
-}
-      $(document).on('click', '.booked', function () {
-    $('#paymentModal').removeClass('hidden'); // Show modal
-    var btnId = $(this).data('sid');
-    console.log(btnId)
-    $('#seatbtnid').val(btnId);
+            selectedSeats.each(function() {           
+                seatsid = $(this).data('sid')        
+                seatList.push({                      
+                    seat_number : seatsid,
+                    pname:pname,
+                    pnrc:pnrc, 
+                    Pphone:Pphone,
+                    pgender: genderVal,
+                    ptravellertype:travellerVal,
+                    prequest:prequest,
+                    routeid:sid
+                });
+            });
+        
+            console.log(JSON.stringify(seatList));
 
-    
-});
+            // Send booking data to Django backend
+            $.ajax({  
+                url: '/confirm/' + sid,
+                method: 'POST',
+                data: JSON.stringify(seatList),  // fix seatList to this JSON.stringify(seatList)
+                contentType: 'application/json',
+                dataType: 'json',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        alert('Booking successful!');
+                        $('#toPrint1').empty();
+                        response.cprint.forEach(function(i) { 
+                            $('#toPrint1').append(`
+                                <thead>
+                                    <tr>
+                                        <th colspan="6" class="text-center py-4 bg-green-100 text-lg">🚍${i.Operator}<br>${i.Bus_type}<br><p>This is Online Booking</P></th>
+                                    </tr>
+                                    <tr>
+                                        <th>📍From</th>
+                                        <th>📍To</th>
+                                        <th>📅Date</th>
+                                        <th>⏰Time</th>
+                                        <th>💺Seat</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${i.from_location}</td>
+                                        <td>${i.to_location}</td>
+                                        <td>${i.Date}</td>
+                                        <td>${i.Time}</td>
+                                        <td>${i.Seat}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">👤Name</th>
+                                        <td colspan="4">${i.Name}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">🆔NRC</th>
+                                        <td colspan="4">${i.Nrc}</td>
+                                    </tr>
+                                    <tr>
+                                        <th colspan="2">📞Phone</th>
+                                        <td colspan="4">${i.Phone}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" style="text-align:center; padding-top: 20px; font-weight: bold; font-size: 1.2rem; color: #0a5274;">
+                                            Thank you for buying ticket 🙏
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            `);
+                        });
+                        printTable();
+                        location.reload();
+                    }
+                }
+            });
+        }
 
-$(document).on('click', '#closeModalBtn', function () {
-    $('#paymentModal').addClass('hidden'); // Hide modal
-});
+        $(document).on('click', '.booked', function () {
+            $('#paymentModal').removeClass('hidden'); // Show modal
+            var btnId = $(this).data('sid');
+            console.log(btnId);
+            $('#seatbtnid').val(btnId);
+        });
 
+        $(document).on('click', '#closeModalBtn', function () {
+            $('#paymentModal').addClass('hidden'); // Hide modal
+        });
 
-
- function printTable() {
-    var el=document.getElementById("toPrint1");
-	el.setAttribute('border', '1');
-	el.setAttribute('cellpadding', '5');
-    el.setAttribute('cellspacing', '2');
-    el.setAttribute('width', '100%');
-    
-	newPrint=window.open("");
-	newPrint.document.write(el.outerHTML);
-	newPrint.print();
-	newPrint.close();
-    }
-
+        function printTable() {
+            var el=document.getElementById("toPrint1");
+            el.setAttribute('border', '1');
+            el.setAttribute('cellpadding', '5');
+            el.setAttribute('cellspacing', '2');
+            el.setAttribute('width', '100%');
+            
+            newPrint=window.open("");
+            newPrint.document.write(el.outerHTML);
+            newPrint.print();
+            newPrint.close();
+        }
     </script>
 </body>
 </html>
