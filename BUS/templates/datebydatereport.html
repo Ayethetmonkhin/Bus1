@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bus Ticket Reports</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            100: '#e6f0ff',
+                            500: '#3b82f6',
+                            700: '#1d4ed8',
+                        },
+                        secondary: {
+                            500: '#6366f1',
+                        },
+                        success: {
+                            500: '#10b981',
+                        },
+                        warning: {
+                            500: '#f59e0b',
+                        },
+                        danger: {
+                            500: '#ef4444',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .route-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #f0f6ff, #1d4ed8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: hsl(216, 100%, 79%);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #2f7bf5 0%, #8ab5ff 100%);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+  
+
+           <!-- Header/Navigation -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3 animate__animated animate__fadeInLeft">
+                    <i class="fas fa-bus text-3xl"></i>
+                    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                        SkyWay
+                    </h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{% url 'home' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'busoperator' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Counter
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="{% url 'routeview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Routes
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    
+                    <a href="{% url 'carnumberlistview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Bus
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                    <a href="{% url 'DateByDateReport' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Report Dashboard
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'aboutview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                       About
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                </nav>
+                
+                {% if user.is_authenticated %}
+                        <a href="{% url 'logoutview' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign Out</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign In</a>
+                    {% endif %}
+                    <button class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+            <!-- Report Navigation -->
+            <div class="flex flex-wrap items-center justify-between mb-6 border-b border-gray-200">
+                <div class="flex space-x-4">
+                    <button id="daily-tab" class="tab-button active px-4 py-2 text-primary-500 font-medium border-b-2 border-primary-500">Daily</button>
+                    <button id="monthly-tab" class="tab-button px-4 py-2 text-gray-500 font-medium hover:text-gray-700">Monthly</button>
+                    <button id="yearly-tab" class="tab-button px-4 py-2 text-gray-500 font-medium hover:text-gray-700">Yearly</button>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <!-- Daily Chart Section -->
+                <div id="daily-chart" class="report-section bg-white rounded-lg shadow p-6 col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-medium text-gray-900">Daily Bus Route</h2>
+                        <div class="flex space-x-3">
+                        </div>
+                    </div>
+                    <div class="h-80">
+                        <canvas id="dailyTransactionsChart"></canvas>
+                    </div>
+                </div>
+
+
+                <!-- Monthly Chart -->
+                <div id="monthly-chart" class="report-section bg-white rounded-2xl shadow-lg p-6 col-span-2 hidden">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Monthly Bus Route</h2>
+                    <div class="flex space-x-2">
+                    </div>
+                </div>
+                <div class="h-80">
+                    <canvas id="monthlyPerformanceChart"></canvas>
+                </div>
+                </div>
+
+
+                <!-- Yearly Chart -->
+                <div id="yearly-chart" class="report-section bg-white rounded-lg shadow p-6 col-span-2 hidden">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-medium text-gray-900">Annual Trends</h2>
+                        <div class="flex space-x-3">
+                        </div>
+                    </div>
+                    <div class="h-80">
+                        <canvas id="annualTrendsChart"></canvas>
+                    </div>
+                </div>
+
+
+                <!-- Right Panel -->
+                <div class="space-y-6">
+                    <!-- Top Routes -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h2 class="text-lg font-medium text-gray-900 mb-4">Top Routes By Month</h2>
+                        <div id  = "topBus" class="space-y-4">
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Yangon ➡ Mandalay</span>
+                                    <span class="text-sm font-medium text-gray-900">145 tickets</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-primary-500 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Yangon ➡ Naypyidaw</span>
+                                    <span class="text-sm font-medium text-gray-900">110 tickets</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-secondary-500 h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">Mandalay ➡ Taunggyi</span>
+                                    <span class="text-sm font-medium text-gray-900">85 tickets</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-warning-500 h-2 rounded-full" style="width: 35%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Total Amount Earned -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Total Amount Earned</h2>
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-green-100 text-green-700 rounded-full p-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3M3 16v-1a4 4 0 014-4h1" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">Total Amount</p>
+                            <p class="text-xl font-bold text-gray-900">
+                                <strong id="total-amount">0</strong>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+
+    <!-- ChartJS Scripts -->
+    <script>
+        // Tabs logic
+        const tabs = document.querySelectorAll('.tab-button');
+        const sections = {
+            'daily-tab': document.getElementById('daily-chart'),
+            'monthly-tab': document.getElementById('monthly-chart'),
+            'yearly-tab': document.getElementById('yearly-chart'),
+        };
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('active', 'border-primary-500', 'text-primary-500');
+                    t.classList.add('text-gray-500');
+                });
+                tab.classList.add('active', 'border-primary-500', 'text-primary-500');
+                Object.values(sections).forEach(section => section.classList.add('hidden'));
+                sections[tab.id].classList.remove('hidden');
+            });
+        });
+
+        // Daily Tickets Chart
+        const dailyCtx = document.getElementById('dailyTransactionsChart').getContext('2d');
+        const dailyl = {{ daily_labels | safe }};  // Labels passed from Django context
+        const dailyamount = {{daily_amounts|safe}}
+        const dailyChart = new Chart(dailyCtx, {
+            type: 'bar',  // ← Changed from 'line' to 'bar'
+            data: {
+                labels: dailyl,
+                datasets: [{
+                    label: '',
+                    data: dailyamount,  // You can replace this with dynamic data
+                    borderRadius: 5,  // Rounded corners
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 5
+                        }
+                    }
+                }
+            }
+        });
+
+        const monthlyCtx = document.getElementById('monthlyPerformanceChart').getContext('2d');
+const monthlyLabels = {{ monthly_labels|safe }};
+const monthlyAmounts = {{ monthly_amounts|safe }};
+
+// Create gradient
+const gradient = monthlyCtx.createLinearGradient(0, 0, 0, 300);
+gradient.addColorStop(0, '#3b82f6');  // top
+gradient.addColorStop(1, '#60a5fa');  // bottom
+
+const monthlyChart = new Chart(monthlyCtx, {
+  type: 'bar',
+  data: {
+    labels: monthlyLabels,
+    datasets: [{
+      label: '',
+      data: monthlyAmounts,
+      backgroundColor: gradient,
+      borderRadius: 8,
+      barPercentage: 0.6,
+      categoryPercentage: 0.5,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          color: '#4b5563',
+          font: {
+            weight: 'bold'
+          }
+        },
+        position: 'bottom'
+      },
+      tooltip: {
+        backgroundColor: '#1f2937',
+        titleColor: '#fff',
+        bodyColor: '#d1d5db',
+        borderWidth: 1,
+        borderColor: '#9ca3af',
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: '#6b7280',
+          callback: function (value) {
+            return value + ' Ks';
+          }
+        },
+        grid: {
+          color: '#e5e7eb'
+        }
+      },
+      x: {
+        ticks: {
+          color: '#6b7280'
+        },
+        grid: {
+          display: false
+        }
+      }
+    }
+  }
+});
+        const yearlyCtx = document.getElementById('annualTrendsChart').getContext('2d');
+
+        // These will come from your Django backend
+        const yearlyLabels = {{ yearly_labels|safe }};
+        const yearlyAmounts = {{ yearly_amounts|safe }};
+
+        const yearlyChart = new Chart(yearlyCtx, {
+            type: 'bar',
+            data: {
+                labels: yearlyLabels,
+                datasets: [
+                    {
+                        label: '',
+                        data: yearlyAmounts,
+                        backgroundColor: '#4f46e5', // Indigo
+                        borderRadius: 6,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let value = context.raw || 0;
+                                return `${value.toLocaleString()} Ks`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString() + ' Ks';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    $(document).ready(function() {
+        $.ajax({
+            url: "/total_amount/",  // Your Django URL to get JSON data
+            method: "GET",
+            dataType: "json",
+            success: function(data) {
+                if (data.error) {
+                    $("#total-amount").text(data.error);
+                    return;
+                }
+                if (data.total_amount !== undefined) {
+                    $("#total-amount").text("Total Today: " + data.total_amount + " Ks");
+                    $('#topBus').empty();
+                    data.top_route_data.forEach(function(route) {
+                        $('#topBus').append(`
+                            <div class="mb-2">
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">${route.from} - ${route.to}</span>
+                                    <span class="text-sm font-medium text-gray-900">${route.time}</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-primary-500 h-2 rounded-full" style="width: ${route.progress}%;"></div>
+                                </div>
+                                <div class="text-right text-xs text-gray-600 mt-1">${route.total_amount} Ks</div>
+                            </div>
+                        `);
+                    });
+                } else {
+                    $("#total-amount").text("No amount found");
+                }
+            },
+            error: function() {
+                $("#total-amount").text("Error loading total amount");
+            }
+        });
+    });
+    </script>
+</body>
+</html>

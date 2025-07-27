@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftBus Ticket</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+        .body {
+            background-color: hsl(216, 100%, 79%);
+        }
+        .ticket-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ee 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ticket-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 12px;
+            background: linear-gradient(90deg, #3B82F6, #6366F1, #8B5CF6);
+        }
+        
+        .info-card {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .route-line {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .route-line::before {
+            content: "";
+            position: absolute;
+            left: 8px;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(#3B82F6, #8B5CF6);
+            border-radius: 4px;
+        }
+        
+        .route-dot {
+            position: absolute;
+            left: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+            z-index: 2;
+        }
+        
+        .route-dot.start {
+            top: 5px;
+        }
+        
+        .route-dot.end {
+            bottom: 5px;
+        }
+        
+        .seat-badge {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(59, 130, 246, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+        }
+        
+        .bus-icon {
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .qr-placeholder {
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .print-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .print-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    {% for booking in booking %}
+    <div class="ticket-card max-w-xl w-full rounded-xl overflow-hidden shadow-lg">
+        <!-- Header -->
+        <div class="px-8 py-6 bg-white">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold text-gradient bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                        <i class="fas fa-bus mr-2 bus-icon"></i> SwiftBus
+                    </h1>
+                    <p class="text-gray-500 text-sm mt-1">E-Ticket Booking Confirmation</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xs text-gray-400 uppercase tracking-wider">Ticket No</p>
+                    <p class="font-semibold text-gray-800 text-lg">#TB78451</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="px-8 py-6">
+            <!-- Route Information -->
+            <div class="info-card rounded-lg p-6 mb-6">
+                <div class="flex justify-between mb-4">
+                    <h3 class="text-xl font-bold text-gray-800"><i class="fas fa-route mr-2 text-blue-500"></i> Journey Details</h3>
+                    <div class="text-sm font-medium px-3 py-1 rounded-full bg-blue-100 text-blue-800">
+                        <i class="fas fa-calendar-alt mr-1"></i> 15 Nov 2023
+                    </div>
+                </div>
+                
+                <div class="route-line">
+                    <div class="route-dot start">
+                        <i class="fas fa-circle text-blue-500 text-xs"></i>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-xs text-gray-500 uppercase">From</p>
+                        <p class="text-lg font-bold text-gray-800">Yangon</p>
+                        <p class="text-gray-500 text-sm">Aung Mingalar Bus Terminal</p>
+                    </div>
+                    
+                    <div class="flex justify-center my-2">
+                        <div class="w-full h-px bg-gradient-to-r from-blue-400 to-purple-400"></div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p class="text-xs text-gray-500 uppercase">To</p>
+                        <p class="text-lg font-bold text-gray-800">Mandalay</p>
+                        <p class="text-gray-500 text-sm">Highway Bus Station</p>
+                    </div>
+                    
+                    <div class="route-dot end">
+                        <i class="fas fa-circle text-purple-500 text-xs"></i>
+                    </div>
+                </div>
+                
+                <div class="pt-4 mt-4 border-t border-gray-100 grid grid-cols-3 gap-4">
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase">Departure</p>
+                        <p class="font-bold text-gray-800">08:00 AM</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase">Duration</p>
+                        <p class="font-bold text-gray-800">8 Hours</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase">Bus Type</p>
+                        <p class="font-bold text-gray-800">VIP Sleeper</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Passenger Information -->
+            <div class="info-card rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4"><i class="fas fa-user mr-2 text-blue-500"></i> Passenger Details</h3>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase">Name</p>
+                        <p class="font-bold text-gray-800">{{booking.Passenger_name}}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase">Phone</p>
+                        <p class="font-bold text-gray-800">{{booking. Passenger_phno}}</p>
+                    </div>
+                </div>
+                <div>
+                        <p class="text-xs text-gray-500 uppercase">NRC</p>
+                        <p class="font-bold text-gray-800">{{booking.NRC}}</p>
+                    </div>
+                
+                <div class="mt-4 grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-xs text-gray-500 uppercase">Bus Name</p>
+                        <p class="font-bold text-gray-800">{{booking.Bus_name}}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seat and Fare Information -->
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <div class="info-card rounded-lg p-6 flex-1">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase">Seat Number</p>
+                            <div class="flex items-center mt-1">
+                                <p class="font-bold text-blue-600 text-2xl">14</p>
+                                <span class="ml-2 seat-badge w-5 h-5 bg-blue-500 rounded-full inline-block"></span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-gray-500 uppercase">Coach Number</p>
+                            <p class="font-bold text-gray-800">B-02</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-xs text-gray-500 uppercase">Boarding Gate</p>
+                        <p class="font-bold text-gray-800">Gate 3</p>
+                    </div>
+                </div>
+                
+                <div class="info-card rounded-lg p-6 flex-1">
+                    <div class="flex justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 uppercase">Fare</p>
+                            <p class="font-bold text-green-600 text-2xl">25,000 Ks</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-gray-500 uppercase">Payment</p>
+                            <p class="font-bold text-gray-800">Paid</p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-xs text-gray-500 uppercase">Booking Date</p>
+                        <p class="font-bold text-gray-800">10 Nov 2023</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- QR Code Placeholder -->
+            <div class="info-card rounded-lg p-6 mb-6 flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h4 class="font-bold text-gray-800 mb-1"><i class="fas fa-qrcode mr-2 text-blue-500"></i> Boarding Pass Code</h4>
+                    <p class="text-xs text-gray-500">Show this at boarding time</p>
+                </div>
+                <div class="qr-placeholder bg-gray-100 rounded-lg p-3 flex items-center justify-center">
+                    <div class="bg-blue-500 text-white font-bold text-sm h-16 w-16 flex items-center justify-center rounded">
+                        TB78451
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="px-8 py-4 bg-white border-t border-gray-100 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-sm text-gray-600 mb-2 md:mb-0">
+                <i class="fas fa-info-circle mr-1 text-blue-500"></i> Arrive at least 30 minutes before departure
+            </p>
+            <button onclick="window.print()" class="print-btn px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:shadow-lg flex items-center">
+                <i class="fas fa-print mr-2"></i> Print Ticket
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Animation effect for the boarding pass code
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const qr = document.querySelector('.qr-placeholder div');
+                qr.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    qr.style.transform = 'scale(1)';
+                }, 200);
+            }, 500);
+        });
+    </script>
+    {% endfor %}
+</body>
+</html>

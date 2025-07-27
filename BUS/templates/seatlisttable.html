@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seat Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="bg-blue-100 min-h-screen py-10 px-4 font-sans text-gray-800">
+
+  <!-- Page Header -->
+  <div class="max-w-6xl mx-auto mb-10">
+    <h1 class="text-4xl font-bold text-blue-900 mb-1">Seat Management</h1>
+    <p class="text-sm text-blue-700">Manage all bus seat records below.</p>
+  </div>
+
+  <!-- Create Seat Section -->
+  <!-- Include jQuery in your template head or before this script -->
+  <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-6 mb-10">
+    <h2 class="text-2xl font-semibold mb-4 text-blue-800">➕ Create Seat</h2>
+    <form id="createSeatForm" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  {% csrf_token %}
+
+  <!-- Seat Number -->
+  <div>
+    <label class="block mb-1 text-sm font-medium">Seat Number</label>
+    <input type="text" id="seatNumber" name="seat_number" placeholder="A1"
+      class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300" />
+  </div>
+
+  <!-- Bus Number -->
+  <div>
+    <label class="block mb-1 text-sm font-medium">Bus Number</label>
+    <select id="busNumber" name="bus_number"
+      class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+      {% for bus in buses %}
+      <option value="{{ bus.bus_number }}">{{ bus.bus_number }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Bus Operator -->
+  <div>
+    <label class="block mb-1 text-sm font-medium">Bus Operator</label>
+    <select id="busOperator" name="bus_operator"
+      class="w-full p-3 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300">
+      {% for bus in buses %}
+      <option value="{{ bus.operator.Bus_name }}">{{ bus.operator.Bus_name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Create Button -->
+  <div class="flex items-end">
+    <button type="submit" class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 w-full">
+      <i class="fas fa-plus-circle mr-2"></i> Create Seat
+    </button>
+  </div>
+</form>
+    </div>
+
+  <!-- Seat List Table -->
+  <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl p-6">
+    <h2 class="text-2xl font-semibold mb-4 text-blue-800">📋 Seat List</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full border-separate border-spacing-y-2">
+        <thead>
+          <tr class="bg-blue-200 text-blue-900 text-left">
+            <th class="px-4 py-2 rounded-tl-lg">#</th>
+            <th class="px-4 py-2">Seat Number</th>
+            <th class="px-4 py-2">Bus Number</th>
+            <th class="px-4 py-2">Bus Operator</th>
+            <th class="px-4 py-2">Status</th>
+            <th class="px-4 py-2 rounded-tr-lg">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for seat in seats %}
+          <tr class="bg-white hover:bg-blue-50 shadow rounded-lg">
+            <td class="px-4 py-2">{{ forloop.counter }}</td>
+            <td class="px-4 py-2">{{ seat.seat_number }}</td>
+            <td class="px-4 py-2">{{ seat.bus.bus_number }}</td>  <!-- Correct -->
+            <td class="px-4 py-2">{{ seat.bus.operator.Bus_name }}</td>  <!-- For operator name -->
+
+            <td class="px-4 py-2">
+              {% if seat.is_available %}
+                <span class="text-green-600 font-semibold">✔ Available</span>
+              {% else %}
+                <span class="text-red-600 font-semibold">✖ Booked</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-2 space-x-4 text-lg">
+              <button class="deleteSeatBtn" data-url="{% url 'delete_seat_ajax' seat.id %}">
+                <i class="fas fa-trash-alt"></i>
+              </button>
+
+
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- AJAX Script -->
+  <script>
+    //create btn
+  $('#createSeatForm').submit(function(e) {
+    e.preventDefault();
+
+    $.ajax({
+      url: "{% url 'create_seat_ajax' %}",
+      method: 'POST',
+      data: {
+        seat_number: $('#seatNumber').val(),
+        bus_number: $('#busNumber').val(),
+        bus_operator: $('#busOperator').val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function(response) {
+        location.reload();
+      },
+      error: function(xhr) {
+        alert("Create failed: " + xhr.responseText);
+      }
+    });
+  });
+
+
+  //delete btn
+ $(document).on('click', '.deleteSeatBtn', function () {
+  const deleteUrl = $(this).data('url');
+
+  if (confirm("Delete this seat?")) {
+    $.ajax({
+      url: deleteUrl,
+      type: 'POST',
+      data: {
+        csrfmiddlewaretoken: '{{ csrf_token }}'
+      },
+      success: function () {
+        location.reload();
+      },
+      error: function (xhr) {
+      }
+    });
+  }
+});
+
+  </script>
+</body>
+</html>

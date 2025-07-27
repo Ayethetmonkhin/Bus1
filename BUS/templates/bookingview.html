@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+
+        body { background-color: hsl(216, 100%, 86%)!important; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .booking-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .booking-table th {
+            background-color: #f3f4f6;
+            position: sticky;
+            top: 0;
+            box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.1);
+        }
+        .booking-table tr:hover {
+            background-color: #f9fafb;
+        }
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-cancelled {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        @media (max-width: 640px) {
+            .booking-table thead {
+                display: none;
+            }
+            .booking-table td {
+                display: block;
+                text-align: right;
+                padding-left: 50%;
+                position: relative;
+            }
+            .booking-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 16px;
+                width: 45%;
+                padding-right: 10px;
+                font-weight: 600;
+                text-align: left;
+                color: #6b7280;
+            }
+            .actions-cell {
+                text-align: center !important;
+                justify-content: center !important;
+            }
+            .actions-cell::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-gray-200 flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Booking List</h2>
+                    <p class="text-gray-500">Manage all passenger bookings</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-3">
+                    <div class="relative">
+                        <input type="text" placeholder="Search bookings..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-full md:w-64">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center">
+                        <i class="fas fa-plus mr-2"></i> New Booking
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="px-6 py-3 border-b border-gray-200 bg-gray-50 flex flex-wrap items-center gap-2">
+                <div class="relative">
+                    <select class="pr-8 pl-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                        <option>All Status</option>
+                        <option>Confirmed</option>
+                        <option>Pending</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
+                <input type="date" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
+                <button class="px-3 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 text-sm flex items-center">
+                    <i class="fas fa-filter mr-1"></i> Filter
+                </button>
+                <div class="text-sm text-gray-500 ml-auto hidden sm:block">Showing 1 to 8 of 24 bookings</div>
+            </div>
+
+            <!-- Booking Table -->
+            <div class="overflow-x-auto">
+                <table class="booking-table">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Passenger</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NRC</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fare</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <!-- Booking 1 -->
+                        <tr>
+                            <td data-label="Booking ID" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#BK-1001</td>
+                            <td data-label="Passenger" class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img src="https://placehold.co/40x40" alt="Portrait of Aung Min, a 35-year-old Burmese man with short black hair and olive skin" class="h-10 w-10 rounded-full">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">Aung Min</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-label="NRC" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">12/YGN-123456</td>
+                            <td data-label="Phone" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">09 987654321</td>
+                            <td data-label="Date" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15 Nov 2023</td>
+                            <td data-label="Fare" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$125.00</td>
+                            <td data-label="Status" class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-active">
+                                    <i class="fas fa-check-circle mr-1"></i> Confirmed
+                                </span>
+                            </td>
+                            <td data-label="Actions" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium actions-cell flex justify-end">
+                                <button class="mr-3 text-blue-600 hover:text-blue-900 flex items-center">
+                                    <i class="fas fa-edit mr-1"></i>
+                                    <span class="hidden sm:inline">Edit</span>
+                                </button>
+                                <button class="text-red-600 hover:text-red-900 flex items-center">
+                                    <i class="fas fa-trash-alt mr-1"></i>
+                                    <span class="hidden sm:inline">Delete</span>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Booking 2 -->
+                        <tr>
+                            <td data-label="Booking ID" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#BK-1002</td>
+                            <td data-label="Passenger" class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img src="https://placehold.co/40x40" alt="Portrait of Hla Hla, a 28-year-old Burmese woman with long black hair and traditional thanaka makeup" class="h-10 w-10 rounded-full">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">Hla Hla</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-label="NRC" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14/MDN-987654</td>
+                            <td data-label="Phone" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">09 945612378</td>
+                            <td data-label="Date" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">17 Nov 2023</td>
+                            <td data-label="Fare" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$95.00</td>
+                            <td data-label="Status" class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-pending">
+                                    <i class="fas fa-clock mr-1"></i> Pending
+                                </span>
+                            </td>
+                            <td data-label="Actions" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium actions-cell flex justify-end">
+                                <button class="mr-3 text-blue-600 hover:text-blue-900 flex items-center">
+                                    <i class="fas fa-edit mr-1"></i>
+                                    <span class="hidden sm:inline">Edit</span>
+                                </button>
+                                <button class="text-red-600 hover:text-red-900 flex items-center">
+                                    <i class="fas fa-trash-alt mr-1"></i>
+                                    <span class="hidden sm:inline">Delete</span>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Booking 3 -->
+                        <tr>
+                            <td data-label="Booking ID" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#BK-1003</td>
+                            <td data-label="Passenger" class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img src="https://placehold.co/40x40" alt="Portrait of Ko Ko, a 45-year-old Burmese businessman with short grey hair and glasses" class="h-10 w-10 rounded-full">
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">Ko Ko</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td data-label="NRC" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">8/YGN-456123</td>
+                            <td data-label="Phone" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">09 932145678</td>
+                            <td data-label="Date" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">18 Nov 2023</td>
+                            <td data-label="Fare" class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">$150.00</td>
+                            <td data-label="Status" class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full status-cancelled">
+                                    <i class="fas fa-times-circle mr-1"></i> Cancelled
+                                </span>
+                            </td>
+                            <td data-label="Actions" class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium actions-cell flex justify-end">
+                                <button class="mr-3 text-blue-600 hover:text-blue-900 flex items-center">
+                                    <i class="fas fa-edit mr-1"></i>
+                                    <span class="hidden sm:inline">Edit</span>
+                                </button>
+                                <button class="text-red-600 hover:text-red-900 flex items-center">
+                                    <i class="fas fa-trash-alt mr-1"></i>
+                                    <span class="hidden sm:inline">Delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Previous
+                    </button>
+                    <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Next
+                    </button>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">24</span> bookings
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                            <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Previous</span>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button aria-current="page" class="z-10 bg-blue-50 border-blue-500 text-blue-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"> 1 </button>
+                            <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"> 2 </button>
+                            <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"> 3 </button>
+                            <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Next</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

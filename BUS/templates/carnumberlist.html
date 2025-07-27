@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bus Number Management</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Font Awesome CDN -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: hsl(216, 100%, 79%);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #2f7bf5 0%, #8ab5ff 100%);
+        }
+
+        #seatlistmd {
+          max-height: 240px;
+          overflow-y: auto;
+        }
+        
+    </style>
+</head>
+<body>
+     <!-- Header/Navigation -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3 animate__animated animate__fadeInLeft">
+                    <i class="fas fa-bus text-3xl"></i>
+                    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                        SkyWay
+                    </h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{% url 'home' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'busoperator' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Counter
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="{% url 'routeview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Routes
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    
+                    <a href="{% url 'carnumberlistview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Bus
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                    <a href="{% url 'DateByDateReport' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Report Dashboard
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'aboutview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                       About
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                </nav>
+                
+                {% if user.is_authenticated %}
+                        <a href="{% url 'logoutview' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign Out</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign In</a>
+                    {% endif %}
+                    <button class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+</head>
+ <div class="container mx-auto px-4 py-12">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">
+                    <i class="fas fa-bus mr-3 text-blue-500"></i>
+                    <span class="gradient-text">Bus Management</span>
+                </h1>
+                <p class="text-gray-500">Manage vehicle Bus efficiently</p>
+            </div>
+        </div>
+
+    <!-- Create Bus Form -->
+    <div class="bg-white shadow-xl p-6 rounded-xl border border-blue-200 mb-10">
+      <h2 class="text-2xl font-semibold mb-4 text-blue-800">➕ Create Bus Number</h2>
+
+      <form id="createBusForm" class="flex flex-wrap md:flex-nowrap gap-4 items-end justify-between">
+        {% csrf_token %}
+
+        <!-- Car Number -->
+        <div class="flex-1 min-w-[180px]">
+          <label class="block text-sm font-medium text-gray-700 mb-1">🚍 Car Number</label>
+          <input
+            type="text"
+            name="bus_number"
+            id="bus_number"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <!-- Driver Name -->
+        <div class="flex-1 min-w-[180px]">
+          <label class="block text-sm font-medium text-gray-700 mb-1">👨‍✈️ Driver Name</label>
+          <input
+            type="text"
+            id="driver_name"
+            name="driver_name"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <!-- Driver Phone -->
+        <div class="flex-1 min-w-[180px]">
+          <label class="block text-sm font-medium text-gray-700 mb-1">📲 Driver Phone Number</label>
+          <input
+            type="text"
+            id="driver_phone"
+            name="driver_phone"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+         <!-- Bus Type -->
+        <div class="flex-1 min-w-[180px]">
+          <label class="block text-sm font-medium text-gray-700 mb-1">🚌 Bus Type</label>
+          <select
+            id="bus_type"
+            name="bus_type"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          >
+            <option value="">-- Select Type --</option>
+            <option value="vip">VIP</option>
+            <option value="normal">Normal</option>
+          </select>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+          <button
+            type="submit"
+            class="bg-blue-300 hover:bg-blue-400 text-blue-900 px-4 py-2 rounded-md font-semibold flex items-center justify-center gap-2 transition whitespace-nowrap"
+            title="Create">
+            <i class="fas fa-plus"></i>
+            <span>Create</span>
+          </button>
+        </div>
+      </form>
+
+      <div id="message" class="mt-4 text-green-600 font-semibold"></div>
+    </div>
+
+   
+<!-- Bus List Table -->
+<div class="w-full px-2 sm:px-4 md:px-6 lg:px-8 xl:px-10 mx-auto bg-white shadow-xl rounded-2xl py-8">
+  <h2 class="text-2xl font-bold mb-6 text-blue-800">🚌 Bus Number List</h2>
+  <div class="overflow-x-auto">
+  <table class="w-full table-auto text-sm whitespace-nowrap">
+    <thead>
+      <tr class="bg-gradient-to-r from-blue-200 to-blue-100 text-blue-900">
+        <th class="px-6 py-4 text-left min-w-[140px] rounded-tl-lg">Car Number</th>
+        <th class="px-6 py-4 text-left min-w-[150px]">Driver Name</th>
+        <th class="px-6 py-4 text-left min-w-[150px]">Phone Number</th>
+        <th class="px-6 py-4 text-left min-w-[100px]">Types</th>
+        <th class="px-6 py-4 text-center min-w-[200px] rounded-tr-lg">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="busTableBody" class="text-gray-800 divide-y divide-gray-100">
+            {% for bus in buses %}
+              <tr id="busRow{{ bus.id }}" class="hover:bg-blue-100 transition duration-300 cursor-pointer">
+                <td class="px-6 py-4 font-medium">{{ bus.bus_number }}</td>
+                <td class="px-6 py-4">{{ bus.driver_name }}</td>
+                <td class="px-6 py-4">{{ bus.driver_phone }}</td>
+                <td class="px-6 py-4">{{ bus.bus_type }}</td>
+                <td class="px-6 py-4 text-center">
+                  <div class="inline-flex space-x-2 whitespace-nowrap">
+                    <button
+                      class="editBusBtn bg-blue-300 hover:bg-blue-400 text-blue-900 px-4 py-2 rounded-md font-semibold flex items-center justify-center gap-2 transition"
+                      title="Edit"
+                      data-id="{{ bus.id }}"
+                      data-bus-number="{{ bus.bus_number }}"
+                      data-driver-name="{{ bus.driver_name }}"
+                      data-driver-phone="{{ bus.driver_phone }}"
+                      data-bus-type="{{ bus.bus_type }}"
+                    ><i class="fas fa-pen-to-square"></i>
+                      <span>Edit</span>
+                    </button>
+
+                    <button
+                      class="bg-red-300 hover:bg-red-400 text-red-900 px-4 py-2 rounded-md font-semibold flex items-center justify-center gap-2 transition deleteBtn"
+                      title="Delete" data-id="{{ bus.id }}"
+                    >
+                      <i class="fas fa-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                     <button
+                      class="bg-green-300 hover:bg-green-400 text-green px-4 py-2 rounded-md font-semibold flex items-center justify-center gap-2 transition seatBtn"
+                      title="Seat" data-id="{{ bus.id }}"
+                    >
+                      <i class=""></i>
+                      <span>Seat</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="5" class="text-center py-4 text-gray-500">No buses found.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- Edit Bus Modal -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+    <button onclick="$('#editModal').addClass('hidden')" class="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-xl">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <h2 class="text-xl font-bold mb-4 text-blue-800">✏️ Edit Bus</h2>
+
+    <form id="editBusForm">
+      {% csrf_token %}
+      <input type="hidden" name="edit_id" id="edit_id">
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">🚍 Car Number</label>
+      <input type="text" name="edit_bus_number" id="edit_bus_number"
+        class="w-full px-3 py-2 mb-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">👨‍✈️ Driver Name</label>
+      <input type="text" name="edit_driver_name" id="edit_driver_name"
+        class="w-full px-3 py-2 mb-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">📲 Driver Phone</label>
+      <input type="text" name="edit_driver_phone" id="edit_driver_phone"
+        class="w-full px-3 py-2 mb-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+
+      <label class="block text-sm font-medium text-gray-700 mb-1">🚌 Bus Type</label>
+      <select
+        id="edit_bus_type"
+        name="bus_type"  
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+        required
+      >
+        <option value="">-- Select Type --</option>
+        <option value="vip">VIP</option>
+        <option value="normal">Normal</option>
+      </select>
+
+      <button type="submit"
+        class="bg-blue-300 hover:bg-blue-400 text-blue-900 px-4 py-2 rounded-md font-semibold transition flex items-center justify-center gap-2">
+        <i class="fas fa-save"></i>
+        <span>Save Changes</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+
+    <!-- Seat Modal -->
+<div id="seatModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
+
+    <button onclick="closeSeatModal()" class="absolute top-3 right-4 text-gray-500 hover:text-red-500 text-xl">
+      <i class="fas fa-times"></i>
+    </button>
+
+    <h2 class="text-xl font-bold mb-4 text-blue-800">Seat View</h2>
+
+    <!-- Modal content -->
+    <div id="seatModalContent" class="space-y-4">
+      <p class="text-gray-700">Bus ID: <span id="modalBusId" class="font-semibold text-blue-600"></span></p>
+
+      <form method="POST" action="{% url 'create_seat' %}">
+        {% csrf_token %}
+
+      <input type="hidden" name="bus_id" id="modalBusInput"/>
+    <!-- Seat input -->
+     <label class="">Seat Number</label>
+      <input
+            type="text"
+            id="creatseatinput"
+            name="seat_number"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+    <!-- subbmint button -->
+      <button
+            type="submit"
+            class="bg-blue-300 hover:bg-blue-400 text-blue-900 px-4 py-2 rounded-md font-semibold flex items-center justify-center gap-2 transition whitespace-nowrap"
+            title="SeatCreate">
+            <i class="fas fa-plus"></i>
+            <span>SeatCreate</span>
+      </button>
+    </form>
+
+    <!-- seatlist -->
+    <label class="block mt-4 text-sm font-medium">Seatlist</label>
+
+
+<div id="seatlistmd" class="w-48 max-h-60 overflow-y-auto text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+</div>
+
+  
+    </div>
+  </div>
+</div>
+
+
+  </div>
+  <script>
+     
+
+    // Open modal function seat
+    function openSeatModal(busId, busNumber) {
+      $('#modalBusId').text(busId);
+      $('#modalBusInput').val(busId);
+      $('#seatModal').removeClass('hidden');
+    }
+
+    // Close modal function
+    function closeSeatModal() {
+      $('#seatModal').addClass('hidden');
+    }
+
+      // Inside $(document).ready()
+  $('#busTableBody').on('click', '.seatBtn', function () {
+    const busId = $(this).data('id');
+    const busNumber = $(this).closest('tr').find('td').eq(0).text(); // Get car number from first column
+    openSeatModal(busId, busNumber);
+    fetchSeatsForBus(busId);
+  });
+
+  function fetchSeatsForBus(busId){
+    $.ajax({
+      url:'/seatbybus/'+busId,
+      method:'GET',
+      data:'json',
+      success:function (response){
+
+        console.log(response.seatlist)
+
+        const seatlist = response.seatlist;
+
+        $('#seatlistmd').empty();
+        seatlist.forEach(function(seat){
+        
+          $('#seatlistmd').append(`
+           <a href="#" class="block w-full px-4 py-2 border-b border-gray-200 cursor-pointer hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-500 dark:focus:text-white">
+            ${seat.seat_number}
+          </a>
+          `)
+        });
+      },
+      error: function(){
+        alert('fail');
+      }
+    })
+  }
+
+ 
+
+  <!-- jQuery CDN -->
+ 
+
+ 
+    $(document).ready(function() {
+      
+      // Create bus AJAX
+      $('#createBusForm').submit(function(e) {
+        e.preventDefault();
+
+        $.ajax({
+          url: '/create_bus/',
+          type: 'POST',
+          data: {
+            bus_number: $('#bus_number').val(),
+            driver_name: $('#driver_name').val(),
+            driver_phone: $('#driver_phone').val(),
+            bus_type: $('#bus_type').val(),
+            csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val()
+          }, 
+         
+          success: function(response) {
+            $('#message').text('✅ ' + response.message);
+            // Append new bus row to table dynamically
+            const newBus = response.bus;
+            const newRow = `
+              <tr id="busRow${newBus.id}" class="hover:bg-blue-100 transition duration-300 cursor-pointer">
+                <td class="px-6 py-4 font-medium">${newBus.bus_number}</td>
+                <td class="px-6 py-4">${newBus.driver_name}</td>
+                <td class="px-6 py-4">${newBus.driver_phone}</td>
+                <td class="px-6 py-4">${newBus.bus_type}</td>
+                <td class="px-6 py-4 text-center">
+                  <div class="inline-flex space-x-2 whitespace-nowrap">
+                    <button
+                      class="editBusBtn bg-blue-300 hover:bg-blue-400 text-blue-900 px-4 py-2 rounded-md font-semibold flex items-center justify-center gap-2 transition"
+                      title="Edit"
+                      data-id="{{ bus.id }}"
+                      data-bus-number="{{ bus.bus_number }}"
+                      data-driver-name="{{ bus.driver_name }}"
+                      data-driver-phone="{{ bus.driver_phone }}"
+                      data-bus-type="{{ bus.bus_type }}"
+
+                    >
+                      <i class="fas fa-pen-to-square"></i>
+                      <span>Edit</span>
+                    </button>
+
+                    <button
+                      class="bg-red-300 hover:bg-red-400 text-red-900 px-4 py-2 rounded-md font-semibold flex items-center justify-center gap-2 transition deleteBtn"
+                      title="Delete" data-id="${newBus.id}"
+                    >
+                      <i class="fas fa-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                    <button
+                      class="bg-green-300 hover:bg-green-400 text-green px-4 py-2 rounded-md font-semibold flex items-center justify-center gap-2 transition seatBtn"
+                      title="Seat" data-id="{{ bus.id }}"
+                    >
+                      <i class=""></i>
+                      <span>Seat</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+      
+            $('#busTableBody').append(newRow);
+
+            $('#createBusForm')[0].reset();
+          },
+          error: function(xhr) {
+            console.error('Error response:', xhr.responseText);
+            $('#message').text('❌ Error creating bus.');
+          }
+        });
+      });
+
+      // Delete bus AJAX
+      $('#busTableBody').on('click', '.deleteBtn', function() {
+        if (!confirm('Are you sure you want to delete this bus?')) return;
+
+        const busId = $(this).data('id');
+        const $row = $(this).closest('tr');
+
+        $.ajax({
+          url: `/delete_bus/${busId}/`,
+          type: 'POST',
+          data: {
+            csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+          },
+          success: function(response) {
+            $('#message').text('✅ ' + response.message);
+            $row.remove();
+          },
+          error: function(xhr) {
+            console.error('Delete error:', xhr.responseText);
+            $('#message').text('❌ Error deleting bus.');
+          }
+        });
+      });
+    });
+
+    // Show edit modal and pre-fill with bus data
+$('#busTableBody').on('click', '.editBusBtn', function () {
+  const id = $(this).data('id');
+  const number = $(this).data('bus-number');
+  const name = $(this).data('driver-name');
+  const phone = $(this).data('driver-phone');
+  const bus_type = $(this).data('bus_type');  // use underscore notation
+
+  $('#edit_id').val(id);
+  $('#edit_bus_number').val(number);
+  $('#edit_driver_name').val(name);
+  $('#edit_driver_phone').val(phone);
+  $('#edit_bus_type').val(bus_type);
+
+  $('#editModal').removeClass('hidden');
+});
+
+// Submit edited bus info via AJAX
+$('#editBusForm').submit(function (e) {
+  e.preventDefault();
+
+  const id = $('#edit_id').val();
+
+  $.ajax({
+    url: `/edit_bus/${id}/`,
+    type: 'POST',
+    data: {
+      bus_number: $('#edit_bus_number').val(),
+      driver_name: $('#edit_driver_name').val(),
+      driver_phone: $('#edit_driver_phone').val(),
+      bus_type: $('#edit_bus_type').val(),
+      csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+    },
+    success: function (response) {
+      $('#message').text('✅ ' + response.message);
+
+      // Update the table row with new values
+      const $row = $(`#busRow${id}`);
+      $row.find('td').eq(0).text(response.bus.bus_number);
+      $row.find('td').eq(1).text(response.bus.driver_name);
+      $row.find('td').eq(2).text(response.bus.driver_phone);
+      $row.find('td').eq(3).text(response.bus.bus_type);
+
+
+       // Show user-friendly label for bus_type
+      // const typeLabel = response.bus.bus_type === 'vip' ? 'VIP' : 'Normal';
+      // $row.find('td').eq(3).text(typeLabel);
+
+      $('#editModal').addClass('hidden');
+    },
+    error: function (xhr) {
+      console.error(xhr.responseText);
+      $('#message').text('❌ Error updating bus.');
+    }
+  });
+});
+
+
+  </script>
+
+</body>
+</html>

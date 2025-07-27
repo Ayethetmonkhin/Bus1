@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftBus - Online Bus Ticket Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: hsl(216, 100%, 79%);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #2975ef 0%, #8ab4ff 100%);
+        }
+        
+        .gradient-bg-dark {
+            background: linear-gradient(135deg, #1a68e6 0%, #6a9ef8 100%);
+        }
+        
+        
+        
+        /* Floating animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .floating {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Bus moving animation */
+        .bus-move {
+            transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        
+        /* Road animation */
+        @keyframes road-move {
+            from { background-position: 0 0; }
+            to { background-position: 100px 0; }
+        }
+        
+        /* Custom scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Glowing border */
+        @keyframes border-glow {
+            0% { box-shadow: 0 0 5px rgba(41, 117, 239, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(41, 117, 239, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(41, 117, 239, 0.5); }
+        }
+        
+        .glow-border {
+            animation: border-glow 3s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header/Navigation -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3 animate__animated animate__fadeInLeft">
+                    <i class="fas fa-bus text-3xl"></i>
+                    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                        SwiftBus
+                    </h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="{% url 'routeview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Routes
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="{% url 'busoperator' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Operator
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="{% url 'buslist' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Bus
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                </nav>
+                
+                {% if user.is_authenticated %}
+                        <a href="{% url 'logoutview' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign Out</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign In</a>
+                    {% endif %}
+                    <button class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-16 relative overflow-hidden">
+        <!-- Animated background elements -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden">
+            <div class="absolute top-20 left-10 w-20 h-20 rounded-full bg-white opacity-5 animate__animated animate__pulse animate__infinite"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-12 md:mb-0 animate__animated animate__fadeInLeft">
+                    <h2 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                        Journey <span class="text-yellow-300">Simplified</span> with SwiftBus
+                    </h2>
+                    <p class="text-xl mb-8 opacity-90 max-w-lg">
+                        Experience seamless travel with our premium bus services. Comfortable seats, free WiFi, and punctual service guaranteed.
+                    </p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-6">
+                        <button class="bg-white text-blue-600 px-8 py-4 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-xl pulse flex items-center justify-center">
+                            <i class="fas fa-ticket-alt mr-3 text-xl"></i> Book Your Seat Now
+                        </button>
+                    </div>
+                    
+                    <div class="mt-12 flex flex-wrap gap-6">
+                        <div class="flex items-center bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                            <i class="fas fa-check-circle mr-2 text-yellow-300"></i>
+                            <span>Free Cancellation</span>
+                        </div>
+                        <div class="flex items-center bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                            <i class="fas fa-wifi mr-2 text-yellow-300"></i>
+                            <span>Free WiFi</span>
+                        </div>
+                        <div class="flex items-center bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                            <i class="fas fa-plug mr-2 text-yellow-300"></i>
+                            <span>Charging Ports</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-1/2 animate__animated animate__fadeInRight">
+                    <div class="relative floating">
+                        <img src="{% static 'images/travels.jpg' %}" 
+                             alt="Luxury Bus" 
+                             class="rounded-2xl shadow-2xl w-full h-auto max-h-[500px] object-cover border-4 border-white transform rotate-1">
+                        <div class="absolute -bottom-5 -right-5 bg-yellow-400 text-gray-900 px-6 py-3 rounded-xl shadow-2xl font-bold text-lg flex items-center">
+                            <i class="fas fa-bolt mr-2"></i> Welcome!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+    </section>
+
+    
+
+
+    {% block content %}
+
+    {% endblock content %}
+    <!-- Final CTA -->
+    <section class="gradient-bg-dark text-white py-20 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full opacity-10">
+            <div class="absolute top-1/4 left-1/4 w-40 h-40 rounded-full bg-white animate__animated animate__pulse animate__infinite"></div>
+            <div class="absolute bottom-1/3 right-1/4 w-32 h-32 rounded-full bg-white animate__animated animate__pulse animate__infinite animate__delay-1s"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 text-center relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready for Your Next Adventure?</h2>
+            <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+                Download our app and get exclusive discounts on your first booking!
+            </p>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Bus moving animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const bus = document.querySelector('.bus-move');
+            let position = -150;
+            let direction = 1;
+            
+            function animateBus() {
+                position += direction * 3;
+                if (position > window.innerWidth + 150) {
+                    position = -150;
+                }
+                bus.style.transform = `translateX(${position}px)`;
+                requestAnimationFrame(animateBus);
+            }
+            
+            animateBus();
+            
+            
+            // Add click effect to buttons
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('mousedown', function() {
+                    this.classList.add('transform', 'scale-95');
+                });
+                button.addEventListener('mouseup', function() {
+                    this.classList.remove('transform', 'scale-95');
+                });
+                button.addEventListener('mouseleave', function() {
+                    this.classList.remove('transform', 'scale-95');
+                });
+            });
+        });
+    
+    </script>
+</body>
+</html>

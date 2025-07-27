@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bus Ticket System - Gallery</title>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-blue-50">
+    <div class="container mx-auto px-6 py-12 bg-white bg-opacity-70 backdrop-blur-md rounded-3xl shadow-lg">
+        
+        <!-- Bus Gallery Section -->
+        <section class="mb-20">
+            <h2 class="text-2xl font-semibold text-blue-900 mb-8 pb-2 border-b-4 border-blue-500">
+                Our Buses
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Bus 1 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transform transition duration-500 hover:scale-105">
+                    <div class="h-64 overflow-hidden">
+                        <img
+                            src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/4df1407a-c934-452a-91a5-410ad6dee112.png"
+                            alt="Modern luxury coach bus with blue and white exterior, large windows, and chrome accents"
+                            class="w-full h-full object-cover transition duration-300 hover:opacity-90"
+                            onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/10ba5d71-baa5-49ca-bfd3-ce064f431db4.png?text=Bus+Image+Failed+to+Load'"
+                        />
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-blue-900 mb-2">
+                            Elite Express
+                        </h3>
+                        <p class="text-blue-700 mb-4">
+                            Elite Express မှာ ခုံကျယ်ကျယ်နဲ့ သက်သောင့်သက်သာရှိတဲ့ ထိုင်ခုံများ၊ ခရီးတလျှောက်အလှတရားကို မြင်နိုင်မယ့် ကျယ်ပြန့်တဲ့ပြတင်းပေါက်များ၊ အားသွင်းစက်နဲ့ entertainment စနစ်များ၊ နဲ့အတူအေးမြမြ သောက်ရသောရေသန့်များကို အခမဲ့ပေးဆောင်ထားပါတယ်။ ခရီးစဉ်တစ်ခုလုံး ပျော်ရွှင်စရာ ဖြစ်စေဖို အတွက်အဆင်ပြေပါတယ်။
+                        </p>
+                        <div class="flex items-center text-blue-600">
+                            <div class="mr-2">
+                               
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <!-- Bus 2 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transform transition duration-500 hover:scale-105">
+                    <div class="h-64 overflow-hidden">
+                        <img
+                            src="{% static 'images/elite1.jpg' %}"
+                            alt="Premium double-decker bus with red exterior, comfortable seating and wrap-around windows"
+                            class="w-full h-full object-cover transition duration-300 hover:opacity-90"
+                            onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/00c0990a-c173-42d9-8ec0-d9bb2c0a4fc5.png'"
+                        />
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-blue-900 mb-2">JJ Express</h3>
+                        <p class="text-blue-700 mb-4">
+                            JJ Express သည် ခရီးသည်များအတွက် အရည်အသွေးမြင့်ဝန်ဆောင်မှုများနှင့်အတူ သက်တောင့်သက်သာဖြစ်စေသော ထိုင်ခုံများ၊ ခရီးတလျှောက်အပန်းဖြေစေသောအပူနှင့်အေး စနစ်များ၊ entertainment system၊ အားသွင်းစက်များနှင့် အခမဲ့ ရေသန့်များကိုပေးထားသော ခရီးတစ်လျှောက်ယုံကြည်စိတ်ချရသော ခရီးသွားလုပ်ငန်းဖြစ်သည်။
+                        </p>
+                        <div class="flex items-center text-blue-600">
+                            <div class="mr-2">
+                            
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+                <!-- Bus 3 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transform transition duration-500 hover:scale-105">
+                    <div class="h-64 overflow-hidden">
+                        <img
+                            src="{% static 'images/jj1.jpg' %}"
+                            alt="Sleek modern electric bus with green and white livery, low floor design for easy access"
+                            class="w-full h-full object-cover transition duration-300 hover:opacity-90"
+                            onerror="this.src='https://placehold.co/600x400?text=Bus+Image+Failed+to+Load'"
+                        />
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-blue-900 mb-2">Mandalar Min Express</h3>
+                        <p class="text-blue-700 mb-4">
+                            Mandalar Min Express သည် ခရီးသည်များအတွက် ခုံအဆင့်မြင့် ဝန်ဆောင်မှုများဖြင့် သက်တောင့်သက်သာဆုံး ခရီးသွားအတွေ့အကြုံကို ပေးစွမ်းနေသော ယုံကြည်စိတ်ချရသော Express Company ဖြစ်ပါသည်။ သပ်ရပ်သော အတွင်းခန်းဒီဇိုင်း၊ Entertainment System နှင့်အတူ ဖုန်းအားသွင်းစက်၊ အခမဲ့ရေသန့်များ ပါဝင်ကာ ခရီးတစ်လျှောက်လုံး သက်သာအေးချမ်းစွာ ခံစားနိုင်ပါသည်။
+                        </p>
+                        <div class="flex items-center text-blue-600">
+                            <div class="mr-2">
+                        
+                            </div>
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Seating Gallery Section -->
+        <section class="mb-20">
+            <h2 class="text-2xl font-semibold text-blue-900 mb-8 pb-2 border-b-4 border-blue-500">
+                Seating Options
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+<!-- Seat 1 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition duration-300 transform hover:scale-105">
+    <div class="h-48 overflow-hidden">
+        <img
+            src="{% static 'images/jjseat.jpg' %}"
+            alt="Premium leather recliner seat with footrest and personal entertainment screen"
+            class="w-full h-full object-cover"
+            onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2297b1d3-6631-41c4-9c1b-f57d5e87548f.png?text=Seat+Image+Failed+to+Load'"
+        />
+    </div>
+    <div class="p-4">
+        <!-- <h3 class="font-semibold text-blue-900 mb-1">First Class</h3>
+        <p class="text-sm text-blue-800">Extra legroom, personal screens</p>
+        <p class="text-sm text-gray-700 mt-1">ချောမွေ့တဲ့အိပ်ရာခုံ၊ ခြေထောက်တင်ဖို‌နေရာနဲ့ ပုဂ္ဂလိကမီဒီယာစနစ်ပါဝင်သည်။</p> -->
+        <div class="mt-2 flex justify-between items-center">
+            <!-- <span class="text-sm text-blue-600">+20% comfort</span> -->
+        </div>
+    </div>
+</div>
+
+<!-- Seat 2 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition duration-300 transform hover:scale-105">
+    <div class="h-48 overflow-hidden">
+        <img
+            src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f80177ab-9550-472f-a714-ac32d7e9b577.png"
+            alt="Standard reclining seat with headrest, armrests and fabric upholstery"
+            class="w-full h-full object-cover"
+            onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/845f39bf-7d36-4e6d-8f09-1d3fd204e9fe.png?text=Seat+Image+Failed+to+Load'"
+        />
+    </div>
+    <div class="p-4">
+        <!-- <h3 class="font-semibold text-blue-900 mb-1">Standard</h3>
+        <p class="text-sm text-blue-800">Comfortable, adjustable</p>
+        <p class="text-sm text-gray-700 mt-1">အဆင်ပြေပြီး အနားယူနိုင်သော ခေါင်းတင်ခုံနှင့်လက်တင်များပါသည်။</p> -->
+        <div class="mt-2 flex justify-between items-center">
+            <!-- <span class="text-sm text-green-600">Popular choice</span> -->
+        </div>
+    </div>
+</div>
+
+<!-- Seat 3 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition duration-300 transform hover:scale-105">
+    <div class="h-48 overflow-hidden">
+        <img
+            src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/b14caea0-e25b-4961-8594-359639a0c7b2.png"
+            alt="Double seat for couples or companions with shared armrest and storage space"
+            class="w-full h-full object-cover"
+            onerror="this.src='https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/bfa60def-d27f-40e2-97d2-6155ecfb3881.png'"
+        />
+    </div>
+    <div class="p-4">
+        <!-- <h3 class="font-semibold text-blue-900 mb-1">Companion Seats</h3>
+        <p class="text-sm text-blue-800">Perfect for couples</p>
+        <p class="text-sm text-gray-700 mt-1">စုံတွဲသမားများအတွက် သင့်တော်တဲ့ နှစ်ယောက်တူခုံဖြစ်ပြီး လက်တင်မျှဝေခုံပါ။</p> -->
+        <div class="mt-2 flex justify-between items-center">
+            <!-- <span class="text-sm text-purple-600">Side by side</span> -->
+        </div>
+    </div>
+</div>
+
+<!-- Seat 4 -->
+<div class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition duration-300 transform hover:scale-105">
+    <div class="h-48 overflow-hidden">
+        <img
+            src="{% static 'images/seat1.jpg' %}"
+            alt="Forward-facing single seat with ample legroom and personal storage compartments"
+            class="w-full h-full object-cover"
+            onerror="this.src='https://placehold.co/400x300?text=Seat+Image+Failed+to+Load'"
+        />
+    </div>
+    <div class="p-4">
+        <!-- <h3 class="font-semibold text-blue-900 mb-1">Single Seats</h3>
+        <p class="text-sm text-blue-800">Privacy guaranteed</p>
+        <p class="text-sm text-gray-700 mt-1">တစ်ဦးတည်း ခရီးသွားသူများအတွက် ကိုယ်ပိုင်အာမခံမှုနှင့်အေးချမ်းမှုရှိသောခုံ။</p> -->
+    </div>
+    </div>
+    </div>
+        </section>
+        <a href="{% url 'aboutview' %}" class="inline-block px-5 py-2.5 rounded-full bg-gradient-to-r from-pink-500 to-red-500 text-white font-medium shadow-md hover:shadow-lg hover:from-pink-600 hover:to-red-600 transform hover:scale-105 transition-all duration-150 ease-in-out">
+            ← About Page ကိုပြန်သွားမယ်
+        </a>&nbsp;
+        <a href="{% url 'home' %}" class="inline-block px-6 py-3 rounded-full bg-gradient-to-r from-green-400 via-blue-500 to-purple-500 text-white font-semibold shadow-md hover:shadow-xl hover:scale-105 transition-all duration-200">
+            🏠 Home Page ကိုပြန်သွားမယ်
+        </a>
+    </div>
+   
+</body>
+</html>

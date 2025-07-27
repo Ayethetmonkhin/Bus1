@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <style>
+        .route-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+       body {
+            font-family: 'Poppins', sans-serif;
+            background-color: hsl(216, 100%, 79%);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #2f7bf5 0%, #8ab5ff 100%);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+        <!-- Header/Navigation -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3 animate__animated animate__fadeInLeft">
+                    <i class="fas fa-bus text-3xl"></i>
+                    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                        SkyWay
+                    </h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{% url 'home' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'busoperator' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Counter
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="{% url 'routeview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Routes
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    
+                    <a href="{% url 'carnumberlistview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Bus
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                    <a href="{% url 'DateByDateReport' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Report Dashboard
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'aboutview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                       About
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                </nav>
+                
+                {% if user.is_authenticated %}
+                        <a href="{% url 'logoutview' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign Out</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign In</a>
+                    {% endif %}
+                    <button class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold">
+                    <i class="fas fa-route mr-3 text-blue-500"></i>
+                    <span class="gradient-text">Route Management</span>
+                </h1>
+                <p class="text-gray-500">Manage vehicle routes efficiently</p>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 fade-in">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-plus-circle text-blue-500 mr-2"></i>
+                Add New Route
+            </h2>
+            
+            <form method="POST" action="" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                 {% csrf_token %}
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">From</label>
+                    <div class="relative">
+                        <select name ="from_location" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none pr-8">
+                            <option value="" selected disabled>Select origin</option>
+                            <option>Yangon(ရန်ကုန်)</option>
+                            <option>Ahtet Min Hla(အထက်မင်းလှ)</option>
+                            <option>Yamethin(ရမည်းသင်း)  Pyawbwe(ပျော်ဘွယ်) Meiktila(မိတ္ထီလာ) Mandalay(မန္တလေး)</option>
+                            <option>Yamethin(ရမည်းသင်း)  Meiktila(မိတ္ထီလာ) Mandalay(မန္တလေး)</option>
+                            <option>Mandalay(မန္တလေး) Pyin Oo Lwin(ပြင်ဦးလွင်)</option>
+                            <option>Mandalay(မန္တလေး) Sagaing(စစ်ကိုင်း)</option>
+                            <option>AungLan(အောင်လံ)</option>
+                            <option>Aungpan(အောင်ပန်း)</option>
+                            <option>Ayadaw(အရာတော်)</option>
+                            <option>Ayetharyar(အေးသာယာ)</option>
+                            <option>Bagan(ပုဂံ) Nyaung U(ညောင်ဦး)</option>
+                            <option>Bago(ပဲခူး)</option>
+                            <option>Bahin(ဗဟင်း)</option>
+                            <option>Banmauk(ဗန်းမောက်)</option>
+                            <option>Banmaw(ဗန်းမော်)</option>
+                            <option>Bilin(ဘီးလင်း)</option>
+                            <option>Bogale(ဘိုကလေး)</option>
+                            <option>Budalin(ဘုတလင်)</option>
+                            <option>Chauk(ချောက်)</option>
+                            <option>Chaung Thar(ချောင်းသာ)</option>
+                            <option>ChaungU(ချောင်းဦး)</option>
+                            <option>DaikU(ဒိုက်ဦး)</option>
+                            <option>Danai(တနိုင်း)</option>
+                            <option>Danubyu(ဓနုဖြူ)</option>
+                            <option>Dawei(ထားဝယ်)</option>
+                            <option>Gangaw(ဂန့်ဂေါ)</option>
+                            <option>Gwa(ဂွ)</option>
+                            <option>Hakha(ဟားခါး)</option>
+                            <option>Ham Myint Mo(ဟံမြင့်မိုရ်)</option>
+                            <option>HeHoe(ဟဲဟိုး)</option>
+                            <option>Hinthada(ဟင်္သာတ)</option>
+                            <option>Hlegu(လှည်းကူး)</option>
+                            <option>Hopin(ဟိုပင်)</option>
+                            <option>Hopong(ဟိုပုံး)</option>
+                            <option>Hpa An(ဘားအံ)</option>
+                            <option>Hpakan(ဖားကန့်)</option>
+                            <option>Hpayargyi(ဘုရားကြီး)</option>
+                            <option>Hsipaw(သီပေါ)</option>
+                            <option>Htonebo(ထုံးဘို)</option>
+                            <option>Indaw(အင်းတော်)</option>
+                            <option>Ingapu(အင်္ဂပူ)</option>
+                            <option>Kalaw(ကလော)</option>
+                            <option>Kale(ကလေး)</option>
+                            <option>Kanbalu(ကန့်ဘလူ)</option>
+                            <option>Karli(ကာလီ)</option>
+                            <option>Katha(ကသာ)</option>
+                            <option>Kawkareik(ကော့ကရိတ်)</option>
+                            <option>Kawyhaung(ကော့သောင်း)</option>
+                            <option>Khin U (ခင်ဦး)</option>
+                            <option>Koebin(ကိုးပင်)</option>
+                            <option>Kume(ကူမဲ)</option>
+                            <option>Kutkai(ကွတ်ခိုင်)</option>
+                            <option>Kyaikkami(ကျိုက်ခမီ)</option>
+                            <option>Kyainseikgyi(ကြာအင်းဆိပ်ကြီး)</option>
+                            <option>Kyangin(ကြံခင်း)</option>
+                            <option>Kyaukme(ကျောက်မဲ)</option>
+                            <option>Kyaukpadaung(ကျောက်ပတောင်း)</option>
+                            <option>Kyaiktiyo(ကျိုက်ထီးရိုး)</option>
+                            <option>Kyaukse(ကျောက်ဆည်)</option>
+                            <option>Lashio(လားရှိး)</option>
+                            <option>Laukkaing(လောက်ကိုင်)</option>
+                            <option>Letpadan(လက်ပံတန်း)</option>
+                            <option>Letpanhla(လက်ပံလှ)</option>
+                            <option>Lewe(လယ်ဝေး)</option>
+                            <option>Mabein(မဘိမ်း)</option>
+                            <option>Madaya(မတ္တရာ)</option>
+                            <option>Magway(မကွေး)</option>
+                            <option>Mahlaing(မလှိင်)</option>
+                            <option>Minbu(မင်းဘူး)</option>
+                            <option>Mogaung(မိုးကောင်း)</option>
+                            <option>Mogok(မိုးကုတ်)</option>
+                            <option>Mohnyin(မိုးညှင်း)</option>
+                            <option>Muse(မူဆယ်)</option>
+                            <option>Mya Taung(မြတောင်)</option>
+                            <option>Maung Mya(မြောင်းမြ)</option>
+                            <option>Myawaddy(မြဝတီ)</option>
+                            <option>Myeik(မြိတ်)</option>
+                            <option>Myingyan(မြင်းခြံ)</option>
+                            <option>Myinmu(မြင်းမူ)</option>
+                            <option>Myitkyina(မြစ်ကြီးနား)</option>
+                            <option>Myitnge(မြစ်ငယိ)</option>
+                            <option>Namhkan(နမ့်ခမ်း)</option>
+                            <option>Namhkok(နမ့်ခုတ်)</option>
+                            <option>Nanmati(နမ္မတီး)</option>
+                            <option>Natmauk(နတ်မောက်)</option>
+                            <option>Natogyi(နွားထိုးကြီး)</option>
+                            <option>Nay Pyi Taw(နေပြည်တော်)</option>
+                            <option>Ngapali(ငပလီ)</option>
+                            <option>Ngar O(ငါးအိုး)</option>
+                            <option>Ngwe Saung(ငွေဆောင်)</option>
+                            <option>Phyu(ဖြူး)</option>
+                            <option>Popa(ပုပ္ပါး)</option>
+                            <option>Pyay(ပြည်)</option>
+                            <option>Shwe ku(ရွှေကူ)</option>
+                            <option>Shwe Bo(ရွှေဘို)</option>
+                            <option>Shwe Nyaung(ရွှေညောင်)</option>
+                            <option>Sintgaing(စဉ့်ကိုင်)</option>
+                            <option>Taunggyi(တောင်ကြီး)</option>
+                            <option>Tachileik(တာချီလိတ်)</option>
+                            <option>Ye(ရေး)</option>
+                            <option>Ye U(ရေဦး)</option>
+                            <option>Wundwin(ဝမ်းတွင်း)</option>
+                        </select>
+                        <i class="fas fa-map-marker-alt absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500"></i>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">To</label>
+                    <div class="relative">
+                        <select name="to_location" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none pr-8">
+                            <option value="" selected disabled>Select destination</option>
+                            <option>Yangon(ရန်ကုန်)</option>
+                            <option>Ahtet Min Hla(အထက်မင်းလှ)</option>
+                            <option>Yamethin(ရမည်းသင်း)  Pyawbwe(ပျော်ဘွယ်) Meiktila(မိတ္ထီလာ) Mandalay(မန္တလေး)</option>
+                            <option>Yamethin(ရမည်းသင်း)  Meiktila(မိတ္ထီလာ) Mandalay(မန္တလေး)</option>
+                            <option>Mandalay(မန္တလေး) Pyin Oo Lwin(ပြင်ဦးလွင်)</option>
+                            <option>Mandalay(မန္တလေး) Sagaing(စစ်ကိုင်း)</option>
+                            <option>AungLan(အောင်လံ)</option>
+                            <option>Aungpan(အောင်ပန်း)</option>
+                            <option>Ayadaw(အရာတော်)</option>
+                            <option>Ayetharyar(အေးသာယာ)</option>
+                            <option>Bagan(ပုဂံ) Nyaung U(ညောင်ဦး)</option>
+                            <option>Bago(ပဲခူး)</option>
+                            <option>Bahin(ဗဟင်း)</option>
+                            <option>Banmauk(ဗန်းမောက်)</option>
+                            <option>Banmaw(ဗန်းမော်)</option>
+                            <option>Bilin(ဘီးလင်း)</option>
+                            <option>Bogale(ဘိုကလေး)</option>
+                            <option>Budalin(ဘုတလင်)</option>
+                            <option>Chauk(ချောက်)</option>
+                            <option>Chaung Thar(ချောင်းသာ)</option>
+                            <option>ChaungU(ချောင်းဦး)</option>
+                            <option>DaikU(ဒိုက်ဦး)</option>
+                            <option>Danai(တနိုင်း)</option>
+                            <option>Danubyu(ဓနုဖြူ)</option>
+                            <option>Dawei(ထားဝယ်)</option>
+                            <option>Gangaw(ဂန့်ဂေါ)</option>
+                            <option>Gwa(ဂွ)</option>
+                            <option>Hakha(ဟားခါး)</option>
+                            <option>Ham Myint Mo(ဟံမြင့်မိုရ်)</option>
+                            <option>HeHoe(ဟဲဟိုး)</option>
+                            <option>Hinthada(ဟင်္သာတ)</option>
+                            <option>Hlegu(လှည်းကူး)</option>
+                            <option>Hopin(ဟိုပင်)</option>
+                            <option>Hopong(ဟိုပုံး)</option>
+                            <option>Hpa An(ဘားအံ)</option>
+                            <option>Hpakan(ဖားကန့်)</option>
+                            <option>Hpayargyi(ဘုရားကြီး)</option>
+                            <option>Hsipaw(သီပေါ)</option>
+                            <option>Htonebo(ထုံးဘို)</option>
+                            <option>Indaw(အင်းတော်)</option>
+                            <option>Ingapu(အင်္ဂပူ)</option>
+                            <option>Kalaw(ကလော)</option>
+                            <option>Kale(ကလေး)</option>
+                            <option>Kanbalu(ကန့်ဘလူ)</option>
+                            <option>Karli(ကာလီ)</option>
+                            <option>Katha(ကသာ)</option>
+                            <option>Kawkareik(ကော့ကရိတ်)</option>
+                            <option>Kawyhaung(ကော့သောင်း)</option>
+                            <option>Khin U (ခင်ဦး)</option>
+                            <option>Koebin(ကိုးပင်)</option>
+                            <option>Kume(ကူမဲ)</option>
+                            <option>Kutkai(ကွတ်ခိုင်)</option>
+                            <option>Kyaikkami(ကျိုက်ခမီ)</option>
+                            <option>Kyainseikgyi(ကြာအင်းဆိပ်ကြီး)</option>
+                            <option>Kyangin(ကြံခင်း)</option>
+                            <option>Kyaukme(ကျောက်မဲ)</option>
+                            <option>Kyaukpadaung(ကျောက်ပတောင်း)</option>
+                            <option>Kyaiktiyo(ကျိုက်ထီးရိုး)</option>
+                            <option>Kyaukse(ကျောက်ဆည်)</option>
+                            <option>Lashio(လားရှိး)</option>
+                            <option>Laukkaing(လောက်ကိုင်)</option>
+                            <option>Letpadan(လက်ပံတန်း)</option>
+                            <option>Letpanhla(လက်ပံလှ)</option>
+                            <option>Lewe(လယ်ဝေး)</option>
+                            <option>Mabein(မဘိမ်း)</option>
+                            <option>Madaya(မတ္တရာ)</option>
+                            <option>Magway(မကွေး)</option>
+                            <option>Mahlaing(မလှိင်)</option>
+                            <option>Minbu(မင်းဘူး)</option>
+                            <option>Mogaung(မိုးကောင်း)</option>
+                            <option>Mogok(မိုးကုတ်)</option>
+                            <option>Mohnyin(မိုးညှင်း)</option>
+                            <option>Muse(မူဆယ်)</option>
+                            <option>Mya Taung(မြတောင်)</option>
+                            <option>Maung Mya(မြောင်းမြ)</option>
+                            <option>Myawaddy(မြဝတီ)</option>
+                            <option>Myeik(မြိတ်)</option>
+                            <option>Myingyan(မြင်းခြံ)</option>
+                            <option>Myinmu(မြင်းမူ)</option>
+                            <option>Myitkyina(မြစ်ကြီးနား)</option>
+                            <option>Myitnge(မြစ်ငယိ)</option>
+                            <option>Namhkan(နမ့်ခမ်း)</option>
+                            <option>Namhkok(နမ့်ခုတ်)</option>
+                            <option>Nanmati(နမ္မတီး)</option>
+                            <option>Natmauk(နတ်မောက်)</option>
+                            <option>Natogyi(နွားထိုးကြီး)</option>
+                            <option>Nay Pyi Taw(နေပြည်တော်)</option>
+                            <option>Ngapali(ငပလီ)</option>
+                            <option>Ngar O(ငါးအိုး)</option>
+                            <option>Ngwe Saung(ငွေဆောင်)</option>
+                            <option>Phyu(ဖြူး)</option>
+                            <option>Popa(ပုပ္ပါး)</option>
+                            <option>Pyay(ပြည်)</option>
+                            <option>Shwe ku(ရွှေကူ)</option>
+                            <option>Shwe Bo(ရွှေဘို)</option>
+                            <option>Shwe Nyaung(ရွှေညောင်)</option>
+                            <option>Sintgaing(စဉ့်ကိုင်)</option>
+                            <option>Taunggyi(တောင်ကြီး)</option>
+                            <option>Tachileik(တာချီလိတ်)</option>
+                            <option>Ye(ရေး)</option>
+                            <option>Ye U(ရေဦး)</option>
+                            <option>Wundwin(ဝမ်းတွင်း)</option>
+                        </select>
+                        <i class="fas fa-map-marker-alt absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label  class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" name="date" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+               <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Time</label>
+                    <select name="time" required
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" disabled selected>Select time</option>
+                        <option value="06:00">06:00 AM</option>
+                        <option value="07:00">07:00 AM</option>
+                        <option value="07:30">07:30 AM</option>
+                        <option value="08:00">08:00 AM</option>
+                        <option value="08:30">08:30 AM</option>
+                        <option value="09:00">09:00 AM</option>
+                        <option value="09:30">09:30 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="10:30">10:30 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="11:30">11:30 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="12:30">12:30 PM</option>
+                        <option value="14:00">02:00 PM</option>
+                        <option value="16:00">04:00 PM</option>
+                        <option value="16:30">04:30 PM</option>
+                        <option value="17:00">05:00 PM</option>
+                        <option value="17:30">05:30 PM</option>
+                        <option value="18:00">06:00 PM</option>
+                        <option value="18:30">06:30 PM</option>
+                        <option value="19:00">07:00 PM</option>
+                        <option value="19:30">07:30 PM</option>
+                        <option value="20:00">08:00 PM</option>
+                    </select>
+                </div>
+
+
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Car Number</label>
+                    <div class="relative">
+                        <select name="car_number" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none pr-8">
+                            <option value="" selected disabled>Select car number</option>
+                            {% for i in carno %}
+                            <option value="{{ i.bus_number }}">{{ i.bus_number }}</option>
+                            {% endfor %}
+                        </select>
+                        <i class="fas fa-bus absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-500"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                    <input
+                        type="number"
+                        name="price"
+                        required
+                        min="0"
+                        step="100"
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Enter price"
+                    >
+                </div>
+
+                <div>
+                    <label  class="block text-sm font-medium text-gray-700 mb-1">Path</label>
+                    <input type="path" name="path" required class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+
+                <div class="flex items-end">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-medium transition-colors duration-300 flex items-center justify-center">
+                        <i class="fas fa-save mr-2"></i> Create
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Edit Modal -->
+        <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg w-full max-w-lg p-6 relative">
+            <button onclick="closeEditModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            <h2 class="text-xl font-semibold mb-4">Edit Route</h2>
+            <form id="editRouteForm">
+            {% csrf_token %}
+            <input type="hidden" id="editRouteId" name="route_id" />
+
+            <label class="block mb-1 font-medium">From Location</label>
+            <input type="text" id="editFromLocation" name="from_location" class="w-full border rounded p-2 mb-4" required />
+
+            <label class="block mb-1 font-medium">To Location</label>
+            <input type="text" id="editToLocation" name="to_location" class="w-full border rounded p-2 mb-4" required />
+
+            <label class="block mb-1 font-medium">Date</label>
+            <input type="date" id="editDate" name="date" class="w-full border rounded p-2 mb-4" required />
+
+            <label class="block mb-1 font-medium">Time</label>
+            <input type="time" id="editTime" name="time" class="w-full border rounded p-2 mb-4" required />
+
+            <label class="block mb-1 font-medium">Price</label>
+            <input type="number" id="editPrice" name="price" class="w-full border rounded p-2 mb-4" required />
+
+            <label class="block mb-1 font-medium">Path</label>
+            <input type="path" id="editPath" name="path" class="w-full border rounded p-2 mb-4" required />
+
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save Changes</button>
+            </form>
+        </div>
+        </div>
+    
+
+        <!-- Route Listing Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6 fade-in">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                    Route List
+                </h2>
+                <form method="get">
+                <!-- Flex container -->
+                        <div class="flex items-end gap-4 mb-4">
+                        <!-- Date Input -->
+                        
+                        <div>
+                            <label for="date" class="block text-sm font-semibold text-gray-700 mb-1">
+                            <i class="fas fa-calendar-alt mr-1 text-blue-500"></i> Select Date
+                            </label>
+                            <input 
+                            type="date" 
+                            name="date" 
+                            id="date"
+                            required 
+                            class="px-4 py-2.5 w-64 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 transition duration-200"
+                            >
+                        </div>
+
+                        <!-- Search Button -->
+                        <div>
+                            <button 
+                            type="submit" 
+                            class="bg-gradient-to-r from-blue-500 to-blue-700 text-white font-medium px-6 py-2.5 rounded-lg shadow-md flex items-center gap-2 hover:from-blue-600 hover:to-blue-800 transition-all duration-200"
+                            >
+                            <i class="fas fa-search text-white"></i>
+                            Search
+                            </button>
+                        </div>
+                       
+                        </div>
+                    </form>
+                </div>
+            <!-- Table Header -->
+            <div class="hidden md:grid grid-cols-12 gap-4 px-4 py-3 bg-blue-300 rounded-lg mb-4">
+                <div class="col-span-3 font-medium text-gray-700">Route</div>
+                <div class="col-span-2 font-medium text-gray-700">Date</div>
+                <div class="col-span-2 font-medium text-gray-700">Time</div> 
+                <div class="col-span-2 font-medium text-gray-700">Car Number</div>
+                <div class="col-span-2 font-medium text-gray-700">Price</div>
+                <!-- <div class="col-span-2 font-medium text-gray-700">Status</div>
+                <div class="col-span-2 font-medium text-gray-700">Action</div> -->
+
+            </div>
+
+            <!-- Route Items -->
+            <div class="space-y-4">
+                <!-- Sample Route 1 -->
+                 {% for i in routes %}
+                <div class="route-card bg-white border border-gray-200 rounded-lg p-4 md:p-6 transition-all duration-300 hover:border-blue-200">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+                    <!-- Route Info -->
+                    <div class="col-span-3">
+                        <div class="flex items-center">
+                            <span class="bg-blue-100 text-blue-800 rounded-full px-3 py-1 text-sm font-medium mr-3">1</span>
+                            <div>
+                                <div class="font-medium text-gray-800">{{ i.from_location }} → {{ i.to_location }}</div>
+                                <div class="text-xs text-gray-500 mt-1">Main highway</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date -->
+                    <div class="col-span-2">
+                        <div class="text-gray-700">{{ i.date|date:"Y-m-d" }}</div>
+                    </div>
+
+                    <!-- Time -->
+                    <div class="col-span-2 text-gray-700">
+                        {{ i.time|time:"h:i A" }} <!-- adjust format if needed -->
+                    </div>
+
+                    <!-- Car Number -->
+                    <div class="col-span-2">
+                        <div class="flex items-center">
+                            <i class="fas fa-car text-blue-500 mr-2"></i>
+                            <span class="font-medium">{{ i.bus.bus_number }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Price -->
+                    <div class="col-span-2">
+                        <div class="flex items-center">
+                            <i class="fas fa-dollar-sign text-green-500 mr-2"></i>
+                            <span class="font-medium">{{ i.price }} MMK</span>
+                        </div>
+                    </div>
+
+                    <!-- Status
+                    <div class="col-span-1">
+                        <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">Active</span>
+                    </div> -->
+
+                        <div class="col-span-5 flex justify-end space-x-2">
+                           <button
+                                type="button"
+                                class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-2 rounded-lg transition"
+                                onclick="openEditModal(
+                                    '{{ i.id }}',
+                                    '{{ i.from_location }}',
+                                    '{{ i.to_location }}',
+                                    '{{ i.date }}',
+                                    '{{ i.time }}',
+                                    '{{ i.price }}',
+                                    '{{ i.bus.bus_number }}'
+                                )">
+                                <i class="fas fa-edit mr-1"></i> Edit
+                            </button>
+                            <form class="delete-route-form" data-id="{{ i.id }}" method="POST" action="{% url 'delete_route' i.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-2 rounded-lg delete-btn">
+                                    <i class="fas fa-trash-alt mr-1"></i> Delete
+                            </button>
+                            </form>
+                            <a href="{% url 'passsengerinfo' i.id %}" class="bg-blue-200 text-blue-600 hover:bg-blue-100 px-3 py-2 rounded-lg transition">
+                                <i class="fas fa-print mr-1"></i> Passenger Info
+                            </a>
+
+                            <a href="{% url 'reportView' i.id %}" class="bg-[#98FF98] text-green-800 hover:bg-[#CFFFCF] px-3 py-2 rounded-lg transition">
+                                <i class="fas fa-file-alt"></i></i> Report
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                      
+                {% endfor %}
+
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-8">
+                <div class="text-gray-500 text-sm">
+                    Showing 1 to 3 of 10 entries
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300">
+                        Previous
+                    </button>
+                    <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                        1
+                    </button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300">
+                        2
+                    </button>
+                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-300">
+                        Next
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample JavaScript for demo purposes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Edit button functionality
+            document.querySelectorAll('.route-card button:first-child').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Edit route: ' + this.closest('.route-card').querySelector('.font-medium').textContent);
+                });
+            });
+            
+            // Delete button functionality
+           document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('.delete-route-form').forEach(form => {
+                    form.addEventListener('submit', function(e) {
+                        e.preventDefault();
+
+                        if (!confirm('Are you sure you want to delete this route?')) return;
+
+                        const routeId = form.dataset.id;
+                        const routeCard = form.closest('.route-card');
+                        const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                        fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': csrfToken,
+                                'Accept': 'application/json',
+                            },
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Network error');
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                // Fade out then remove the card
+                                routeCard.style.opacity = '0';
+                                setTimeout(() => routeCard.remove(), 300);
+                                location.reload();
+                            } else {
+                                alert(data.error || 'Failed to delete route.');
+                            }
+                        })
+                        .catch(() => alert('Error deleting route.'));
+                    });
+                });
+
+            });
+        });
+
+    function openEditModal(id, from, to, date, time, price, carNumber) {
+    document.getElementById('editRouteId').value = id;
+    document.getElementById('editFromLocation').value = from;
+    document.getElementById('editToLocation').value = to;
+    document.getElementById('editDate').value = date;
+    document.getElementById('editTime').value = time;
+    document.getElementById('editPrice').value = price;
+   
+
+
+    document.getElementById('editModal').classList.remove('hidden');
+}
+
+    function closeEditModal() {
+  document.getElementById('editModal').classList.add('hidden');
+}
+
+
+    // Handle Edit Form Submission
+    $('#editRouteForm').on('submit', function (e) {
+        e.preventDefault();
+
+        const routeId = $('#editRouteId').val();
+        const formData = {
+            'from_location': $('#editFromLocation').val(),
+            'to_location': $('#editToLocation').val(),
+            'date': $('#editDate').val(),
+            'time': $('#editTime').val(),
+            'price': $('#editPrice').val(),
+            'path': $('#editPath').val(),
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+        };
+
+        $.ajax({
+            url: '/edit_route/' + routeId + '/',  // Your Django URL to handle editing
+            method: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    alert("Route updated successfully!");
+                    location.reload(); // Refresh to show updated data
+                } else {
+                    alert("Failed to update: " + (response.error || 'Unknown error'));
+                }
+            },
+            error: function () {
+                alert("An error occurred while updating the route.");
+            }
+        });
+    });
+
+    </script>
+</body>
+</html>

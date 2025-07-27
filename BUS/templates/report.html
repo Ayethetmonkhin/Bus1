@@ -1,0 +1,347 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Report List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    .fade-in {
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    body {
+            font-family: 'Poppins', sans-serif;
+            background-color: hsl(216, 100%, 79%);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #2f7bf5 0%, #8ab5ff 100%);
+        }
+
+/* ticketprint */
+  @media print {
+  body * {
+    visibility: hidden;
+  }
+  #printArea, #printArea * {
+    visibility: visible;
+  }
+  #printArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+  }
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 8px;
+    text-align: center;
+  }
+  caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+}
+
+/* ticketprint */
+  @media print {
+  body * {
+    visibility: hidden;
+  }
+  #printArea, #printArea * {
+    visibility: visible;
+  }
+  #printArea {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+  }
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 8px;
+    text-align: center;
+  }
+  caption {
+    caption-side: top;
+    text-align: center;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+}
+
+  </style>
+</head>
+<body class="bg-blue-100 min-h-screen font-sans">
+
+<!-- Header/Navigation -->
+    <header class="gradient-bg text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3 animate__animated animate__fadeInLeft">
+                    <i class="fas fa-bus text-3xl"></i>
+                    <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-blue-100">
+                        SkyWay
+                    </h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="{% url 'home' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Home
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'busoperator' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Counter
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    <a href="{% url 'routeview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Routes
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    
+                    <a href="{% url 'carnumberlistview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Bus
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                    <a href="{% url 'DateByDateReport' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                        Report Dashboard
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'aboutview' %}" class="hover:text-blue-200 font-medium transition duration-300 transform hover:scale-110 relative group">
+                       About
+                        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
+                    </a>
+
+                </nav>
+                
+                {% if user.is_authenticated %}
+                        <a href="{% url 'logoutview' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign Out</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="bg-white text-blue-600 px-6 py-2 rounded-full font-bold hover:bg-blue-50 transition transform hover:scale-105 shadow-lg glow-border">Sign In</a>
+                    {% endif %}
+                    <button class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+  <!-- Content -->
+  <div class="max-w-7xl mx-auto px-4 py-12">
+
+    <!-- Title & Search -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+      <h2 class="text-3xl font-bold text-gray-800 flex items-center gap-2">
+       <i class="fas fa-clipboard-list text-blue-500"></i> Report
+      </h2>
+        <input type="hidden" id="seatbtnid" value="{{ getroute.id }}">
+
+        <!-- Print Button -->
+        <button id="printBtn" class="bg-blue-600 text-white px-4 py-2 rounded shadow">
+          <i class="fas fa-print"></i> Print
+        </button>
+
+    </div>
+
+
+  <!-- passenger info list table print -->
+  <div id="printArea" style="display:none;">
+  <table cellpadding="8" cellspacing="0" style="border-collapse: separate; border-spacing: 8px; width:100%; border: 1px solid #333;">
+    <thead>
+      <tr style="background-color: #f0f0f0;">
+        <th>Name</th>
+        <th>NRC</th>
+        <th>Phone</th>
+        <th>Seat</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody id="printTableBody">
+      <!-- Rows here -->
+    </tbody>
+  </table>
+</div>
+
+
+
+    <!-- Trip Summary -->
+<div class="bg-white border border-gray-200 rounded-lg shadow-sm px-6 py-4 mb-6 overflow-x-auto">
+  <div class="flex flex-wrap gap-x-10 gap-y-2 text-sm md:text-base whitespace-nowrap">
+
+    <div class="flex items-center gap-2">
+      <span class="font-semibold text-gray-700">Date:</span>
+      <span class="text-gray-600">{{getroute.date}}</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="font-semibold text-gray-700">Operator:</span>
+      <span class="text-gray-600">{{getroute.bus.operator}}</span>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="font-semibold text-gray-700">Route:</span>
+      <span class="text-gray-600">{{getroute.from_location}} → {{getroute.to_location}}</span>
+    </div>
+
+  </div>
+</div>
+
+
+    <!-- Table Header -->
+    <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-3 bg-white border border-gray-200 rounded-lg mb-4 shadow-sm">
+        <div class="col-span-3 font-semibold text-gray-700">Passenger</div>
+        <div class="col-span-2 font-semibold text-gray-700">NRC</div>
+        <div class="col-span-2 font-semibold text-gray-700">Phone</div>
+        <div class="col-span-2 font-semibold text-gray-700">Seat</div>
+        <div class="col-span-3 font-semibold text-gray-700">Amount</div>
+    </div>
+
+
+    <!-- Passenger Info List -->
+    <div class="space-y-4 fade-in">
+  {% for i in sbook %}
+  <div class="grid grid-cols-12 gap-4 items-center bg-white p-4 rounded-lg shadow border">
+    <div class="col-span-3 text-gray-800 font-semibold">{{ i.name }}</div>
+    <div class="col-span-2 text-gray-700 text-sm">{{ i.nrc }}</div>
+    <div class="col-span-2 text-gray-700 text-sm">{{ i.phone }}</div>
+    <div class="col-span-2">
+      {% if i.seat_status == 3 %}
+      <span class="bg-green-300 text-blue-800 px-4 py-1 rounded-full text-sm font-medium">{{ i.seat_number }}</span>
+      {% elif i.seat_status == 2 %}
+      <span class="bg-yellow-300 text-blue-800 px-4 py-1 rounded-full text-sm font-medium">{{ i.seat_number }}</span>
+      {% else %}
+      <span class="bg-blue-100 text-blue-800 px-4 py-1 rounded-full text-sm font-medium">{{ i.seat_number }}</span>
+      {% endif %}
+    </div>
+    <div class="col-span-3 text-gray-700 text-sm font-semibold">
+      {{ i.amount|default:"-" }}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+     
+
+    <!-- Total -->
+  <div class="bg-white border border-gray-200 rounded-xl p-6 mt-10 shadow-sm flex justify-end items-center">
+    <div class="text-xl font-bold text-gray-800">
+     Total Amount: <span class="text-blue-600">{{total_amount}}Ks</span>
+    </div>
+  </div>
+
+
+    <!-- Pagination -->
+    <div class="flex justify-between items-center mt-10">
+      <div class="text-gray-600 text-sm">Showing 1 to 1 of 1 entries</div>
+      <div class="flex gap-2">
+        <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">Previous</button>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow">1</button>
+        <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition">Next</button>
+      </div>
+    </div>
+
+  </div>
+  <script>
+
+    //print invoice sample print function only
+        function printTable() {
+	        var el=document.getElementById("toPrint");
+	        el.setAttribute('border', '1');
+	        el.setAttribute('cellpadding', '5');
+            el.setAttribute('cellspacing', '2');
+            el.setAttribute('width', '100%');
+    
+	        newPrint=window.open("");
+	        newPrint.document.write(el.outerHTML);
+	        newPrint.print();
+	        newPrint.close();
+        }
+
+ $(document).on('click', '#printBtn', function () {
+  const routeId = $('#seatbtnid').val();
+
+  $.ajax({
+    url: '/reportprint/' + routeId,
+    method: 'GET',
+    success: function (response) {
+  if (response.success) {
+    appendReportToPrintTable(response.data, response.total_amount);
+
+    $('#printArea').show();
+
+    setTimeout(() => {
+      window.print();
+      $('#printArea').hide();
+      location.reload();
+    }, 500);
+  } else {
+    alert("Error: " + response.error);
+  }
+}
+
+  });
+});
+
+
+ function appendReportToPrintTable(data, totalAmount) {
+  let tableBody = $('#printTableBody');
+  tableBody.empty(); // Clear previous rows
+
+  data.forEach(item => {
+    const row = `
+      <tr>
+        <td class="border p-1">${item.name || '-'}</td>
+        <td class="border p-1">${item.nrc || '-'}</td>
+        <td class="border p-1">${item.phone || '-'}</td>
+        <td class="border p-1">${item.seat || '-'}</td>
+        <td class="border p-1">${item.amount ? item.amount + ' Ks' : '-'}</td>
+      </tr>
+    `;
+    tableBody.append(row);
+  });
+
+  // Append total row at the bottom
+  const totalRow = `
+    <tr>
+      <td colspan="4" class="border p-1 font-bold text-right">Total Amount:</td>
+      <td class="border p-1 font-bold">${totalAmount} Ks</td>
+    </tr>
+  `;
+  tableBody.append(totalRow);
+}
+
+</script>
+
+
+</body>
+</html>

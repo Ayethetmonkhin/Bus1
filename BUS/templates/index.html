@@ -1,0 +1,784 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftBus - Online Bus Ticket Booking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #dae9ff;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+        }
+        
+        .seat {
+            transition: all 0.2s ease;
+        }
+        
+        .seat:hover {
+            transform: scale(1.05);
+        }
+        
+        .selected {
+            background-color: #8ab7ff;
+            color: white;
+        }
+        
+        .booked {
+            background-color: #e5e7eb;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        /* Custom scrollbar */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header/Navigation -->
+    <header class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-bus text-2xl"></i>
+                    <h1 class="text-2xl font-bold">SwiftBus</h1>
+                </div>
+                
+                <nav class="hidden md:flex space-x-6">
+                    <a href="#" class="hover:text-blue-200 font-medium">Home</a>
+                    <a href="#" class="hover:text-blue-200 font-medium">Routes</a>
+                    <a href="#" class="hover:text-blue-200 font-medium">Bookings</a>
+                    <a href="#" class="hover:text-blue-200 font-medium">About</a>
+                    <a href="#" class="hover:text-blue-200 font-medium">Contact</a>
+                </nav>
+                
+                <div class="flex items-center space-x-4">
+                    <button class="bg-white text-blue-600 px-4 py-2 rounded-full font-medium hover:bg-blue-50 transition">
+                        Sign In
+                    </button>
+                    <button class="md:hidden text-xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h2 class="text-4xl font-bold mb-4">Book Your Bus Tickets in Minutes</h2>
+                    <p class="text-xl mb-6">Travel across the country with comfort and safety. Over 1000+ routes available.</p>
+                    <div class="flex space-x-4">
+                        <button class="bg-white text-blue-600 px-6 py-3 rounded-full font-bold hover:bg-blue-50 transition">
+                            Book Now
+                        </button>
+                        <button class="border-2 border-white text-white px-6 py-3 rounded-full font-bold hover:bg-white hover:text-blue-600 transition">
+                            View Routes
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                  <img src="{% static 'images/travels.jpg' %}" 
+                     alt="Luxury Bus" 
+                         class="rounded-xl shadow-2xl w-full h-auto max-h-96 object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Form -->
+    <section class="container mx-auto px-4 py-8 -mt-10 z-10 relative">
+        <div class="bg-white rounded-xl shadow-xl p-6">
+            <h3 class="text-2xl font-bold mb-6 text-gray-800">Find Your Bus</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <!-- From -->
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">From</label>
+                    <div class="relative">
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select City</option>
+                            <option value="new-york">Yangon</option>
+                            <option value="los-angeles">Mandalay</option>
+                            <option value="chicago">Nay Pyi Taw</option>
+                            <option value="houston">Pyin Oo Lwin</option>
+                            <option value="houston">Taung Gyi</option>
+                            <option value="phoenix">Banmaw</option>
+                        </select>
+                        <i class="fas fa-map-marker-alt absolute right-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- To -->
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">To</label>
+                    <div class="relative">
+                        <select class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="">Select City</option>
+                            <option value="new-york">Yangon</option>
+                            <option value="los-angeles">Mandalay</option>
+                            <option value="chicago">Nay Pyi Taw</option>
+                            <option value="houston">Pyin Oo Lwin</option>
+                            <option value="houston">Taung Gyi</option>
+                            <option value="phoenix">Banmaw</option>
+                        </select>
+                        <i class="fas fa-map-marker-alt absolute right-3 top-3 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                    <input type="date" 
+                           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                
+                <!-- Search Button -->
+                <div class="flex items-end">
+                    <button class="w-full bg-blue-600 text-white p-3 rounded-lg font-bold hover:bg-blue-700 transition">
+                        Search Buses
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Available Buses -->
+    <section class="container mx-auto px-4 py-12">
+        <h3 class="text-2xl font-bold mb-6 text-gray-800">Available Buses</h3>
+        
+        <div class="grid grid-cols-1 gap-6">
+                <!-- Bus Cards with Seat Selection -->
+
+<style>
+  .seat-btn {
+    background-color: white;
+    border: 2px solid #3b82f6; /* Tailwind blue-500 */
+    border-radius: 0.5rem;
+    padding: 1rem 0;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  .seat-btn:hover {
+    background-color: #bfdbfe; /* Tailwind blue-200 */
+  }
+  .seat-btn.selected {
+    background-color: #3b82f6; /* Tailwind blue-500 */
+    color: white;
+  }
+</style>
+
+<div id="bus-container">
+
+  <!-- Bus Template (repeat for each bus, change IDs and data) -->
+  <!-- Bus 1 -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="md:flex">
+      <div class="md:w-1/4 bg-blue-50 p-6 flex flex-col items-center justify-center">
+        <div class="text-center mb-4">
+           <img src="https://cdn-icons-png.flaticon.com/512/741/741411.png" alt="Bus Icon" class="w-16 h-16 mx-auto">
+          <h4 class="font-bold text-lg mt-2">Elite Express</h4>
+          <p class="text-sm text-gray-600">Normal</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-blue-600">$45</p>
+          <p class="text-sm text-gray-500">per seat</p>
+        </div>
+      </div>
+
+      <div class="md:w-2/4 p-6 border-r border-gray-200">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <p class="text-sm text-gray-500">Departure</p>
+            <p class="font-bold">08:30 AM</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Arrival</p>
+            <p class="font-bold">02:45 PM</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Duration</p>
+            <p class="font-bold">6h 15m</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Seats Left</p>
+            <p class="font-bold text-green-600">12</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2 mb-2">
+          <i class="fas fa-wifi text-blue-500"></i>
+          <span class="text-sm">Free WiFi</span>
+        </div>
+        <div class="flex items-center space-x-2 mb-2">
+          <i class="fas fa-snowflake text-blue-500"></i>
+          <span class="text-sm">AC</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-tv text-blue-500"></i>
+          <span class="text-sm">Entertainment</span>
+        </div>
+      </div>
+
+      <div class="md:w-1/4 p-6 flex flex-col justify-center">
+        <button onclick="toggleSeatSection('seat-section-1')" class="bg-blue-600 text-white py-3 px-6 rounded-lg font-bold mb-3 hover:bg-blue-700 transition">
+          View Seats
+        </button>
+      </div>
+    </div>
+
+    <!-- Seat Selection Dropdown -->
+    <div id="seat-section-1" class="hidden border-t border-gray-200 p-6 bg-gray-50">
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Seat Layout -->
+        <div>
+          <h4 class="text-lg font-semibold mb-2">Select Seat</h4>
+          <div class="grid grid-cols-4 gap-4 max-w-xs">
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">A1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">A2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">B1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">B2</button>
+
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">C1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">C2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">D1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">D2</button>
+
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">E1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">E2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">F1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 45, 1)">F2</button>
+          </div>
+        </div>
+
+        <!-- Passenger Info -->
+        <form method="POST" action="/book/1/" class="bg-white p-4 rounded-lg border" id="form-1">
+          <h4 class="text-lg font-semibold mb-2">Passenger Information</h4>
+          <input type="hidden" name="seat" id="selected-seat-1" required>
+          <input type="hidden" name="fare" id="selected-fare-1" required>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Name</label>
+            <input type="text" name="name" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">NRC</label>
+            <input type="text" name="nrc" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Phone</label>
+            <input type="text" name="phone" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Date</label>
+            <input type="date" name="date" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Time</label>
+            <input type="time" name="time" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mt-3 font-semibold text-blue-600">
+            Selected Seat: <span id="display-seat-1">None</span><br>
+            Fare: $<span id="display-fare-1">0</span>
+          </div>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 mt-3 rounded hover:bg-blue-700">
+            Confirm Booking
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bus 2 -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="md:flex">
+      <div class="md:w-1/4 bg-blue-50 p-6 flex flex-col items-center justify-center">
+        <div class="text-center mb-4">
+           <img src="https://cdn-icons-png.flaticon.com/512/741/741411.png" alt="Bus Icon" class="w-16 h-16 mx-auto">
+          <h4 class="font-bold text-lg mt-2">Elite Express</h4>
+          <p class="text-sm text-gray-600">VIP</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-blue-600">$35</p>
+          <p class="text-sm text-gray-500">per seat</p>
+        </div>
+      </div>
+
+      <div class="md:w-2/4 p-6 border-r border-gray-200">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <p class="text-sm text-gray-500">Departure</p>
+            <p class="font-bold">10:15 AM</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Arrival</p>
+            <p class="font-bold">05:30 PM</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Duration</p>
+            <p class="font-bold">7h 15m</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Seats Left</p>
+            <p class="font-bold text-green-600">8</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2 mb-2">
+          <i class="fas fa-snowflake text-blue-500"></i>
+          <span class="text-sm">AC</span>
+        </div>
+        <div class="flex items-center space-x-2 mb-2">
+          <i class="fas fa-utensils text-blue-500"></i>
+          <span class="text-sm">Meal Included</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-bottle-water text-blue-500"></i>
+          <span class="text-sm">Water Bottle</span>
+        </div>
+      </div>
+
+      <div class="md:w-1/4 p-6 flex flex-col justify-center">
+        <button onclick="toggleSeatSection('seat-section-2')" class="bg-blue-600 text-white py-3 px-6 rounded-lg font-bold mb-3 hover:bg-blue-700 transition">
+          View Seats
+        </button>
+      </div>
+    </div>
+
+    <!-- Seat Selection Dropdown -->
+    <div id="seat-section-2" class="hidden border-t border-gray-200 p-6 bg-gray-50">
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Seat Layout -->
+        <div>
+          <h4 class="text-lg font-semibold mb-2">Select Seat</h4>
+          <div class="grid grid-cols-4 gap-4 max-w-xs">
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">A3</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">A2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">B1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">B2</button>
+
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">C1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">C2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">D1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">D2</button>
+
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">E1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">E2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">F1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 35, 2)">F2</button>
+          </div>
+        </div>
+
+        <!-- Passenger Info -->
+        <form method="POST" action="/book/2/" class="bg-white p-4 rounded-lg border" id="form-2">
+          <h4 class="text-lg font-semibold mb-2">Passenger Information</h4>
+          <input type="hidden" name="seat" id="selected-seat-2" required>
+          <input type="hidden" name="fare" id="selected-fare-2" required>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Name</label>
+            <input type="text" name="name" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">NRC</label>
+            <input type="text" name="nrc" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Phone</label>
+            <input type="text" name="phone" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Date</label>
+            <input type="date" name="date" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Time</label>
+            <input type="time" name="time" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mt-3 font-semibold text-blue-600">
+            Selected Seat: <span id="display-seat-2">None</span><br>
+            Fare: $<span id="display-fare-2">0</span>
+          </div>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 mt-3 rounded hover:bg-blue-700">
+            Confirm Booking
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bus 5 -->
+  <div class="bg-white rounded-xl shadow-md overflow-hidden mb-6">
+    <div class="md:flex">
+      <div class="md:w-1/4 bg-blue-50 p-6 flex flex-col items-center justify-center">
+        <div class="text-center mb-4">
+          <img src="https://cdn-icons-png.flaticon.com/512/741/741411.png" alt="Bus Icon" class="w-16 h-16 mx-auto">
+          <h4 class="font-bold text-lg mt-2">JJ Express</h4>
+          <p class="text-sm text-gray-600">VIP</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-blue-600">$40</p>
+          <p class="text-sm text-gray-500">per seat</p>
+        </div>
+      </div>
+
+      <div class="md:w-2/4 p-6 border-r border-gray-200">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <p class="text-sm text-gray-500">Departure</p>
+            <p class="font-bold">11:00 AM</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Arrival</p>
+            <p class="font-bold">06:00 PM</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Duration</p>
+            <p class="font-bold">7h 0m</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Seats Left</p>
+            <p class="font-bold text-green-600">9</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2 mb-2">
+          <i class="fas fa-wifi text-blue-500"></i>
+          <span class="text-sm">Free WiFi</span>
+        </div>
+        <div class="flex items-center space-x-2 mb-2">
+          <i class="fas fa-snowflake text-blue-500"></i>
+          <span class="text-sm">AC</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <i class="fas fa-utensils text-blue-500"></i>
+          <span class="text-sm">Meal Included</span>
+        </div>
+      </div>
+
+      <div class="md:w-1/4 p-6 flex flex-col justify-center">
+        <button onclick="toggleSeatSection('seat-section-5')" class="bg-blue-600 text-white py-3 px-6 rounded-lg font-bold mb-3 hover:bg-blue-700 transition">
+          View Seats
+        </button>
+        <button class="border border-blue-600 text-blue-600 py-3 px-6 rounded-lg font-bold hover:bg-blue-50 transition">
+          Details
+        </button>
+      </div>
+    </div>
+
+    <!-- Seat Selection Dropdown -->
+    <div id="seat-section-5" class="hidden border-t border-gray-200 p-6 bg-gray-50">
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Seat Layout -->
+        <div>
+          <h4 class="text-lg font-semibold mb-2">Select Seat</h4>
+          <div class="grid grid-cols-4 gap-4 max-w-xs">
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">A1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">A2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">B1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">B2</button>
+
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">C1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">C2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">D1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">D2</button>
+
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">E1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">E2</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">F1</button>
+            <button class="seat-btn" onclick="selectSeat(this, 40, 5)">F2</button>
+          </div>
+        </div>
+
+        <!-- Passenger Info -->
+        <form method="POST" action="/book/5/" class="bg-white p-4 rounded-lg border" id="form-5">
+          <h4 class="text-lg font-semibold mb-2">Passenger Information</h4>
+          <input type="hidden" name="seat" id="selected-seat-5" required>
+          <input type="hidden" name="fare" id="selected-fare-5" required>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Name</label>
+            <input type="text" name="name" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">NRC</label>
+            <input type="text" name="nrc" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Phone</label>
+            <input type="text" name="phone" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Date</label>
+            <input type="date" name="date" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mb-2">
+            <label class="block text-sm font-medium">Time</label>
+            <input type="time" name="time" class="w-full border px-3 py-2 rounded" required>
+          </div>
+          <div class="mt-3 font-semibold text-blue-600">
+            Selected Seat: <span id="display-seat-5">None</span><br>
+            Fare: $<span id="display-fare-5">0</span>
+          </div>
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 mt-3 rounded hover:bg-blue-700">
+            Confirm Booking
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleSeatSection(id) {
+    const section = document.getElementById(id);
+    section.classList.toggle('hidden');
+  }
+
+  function selectSeat(btn, fare, busId) {
+    // Remove selected class from all seats in this bus
+    const busSeatSection = document.getElementById(`seat-section-${busId}`);
+    busSeatSection.querySelectorAll('.seat-btn').forEach(b => b.classList.remove('selected'));
+
+    // Add selected class to clicked button
+    btn.classList.add('selected');
+
+    // Set seat and fare hidden inputs and display
+    document.getElementById(`selected-seat-${busId}`).value = btn.textContent.trim();
+    document.getElementById(`selected-fare-${busId}`).value = fare;
+    document.getElementById(`display-seat-${busId}`).textContent = btn.textContent.trim();
+    document.getElementById(`display-fare-${busId}`).textContent = fare;
+  }
+</script>
+
+    <!-- Features Section -->
+    <section class="bg-gray-50 py-12">
+        <div class="container mx-auto px-4">
+            <h3 class="text-2xl font-bold mb-8 text-center text-gray-800">Have a great day</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-blue-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Safe Travel</h4>
+                    <p class="text-gray-600">Our buses are regularly sanitized and drivers are trained in safety protocols.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-ticket-alt text-blue-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">Easy Booking</h4>
+                    <p class="text-gray-600">Book your tickets in just a few clicks with our user-friendly platform.</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-headset text-blue-600 text-2xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg mb-2">24/7 Support</h4>
+                    <p class="text-gray-600">Our customer support team is available round the clock to assist you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="gradient-bg text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <h3 class="text-2xl font-bold mb-2">Get Special Offers</h3>
+            <p class="mb-6 max-w-2xl mx-auto">Subscribe to our newsletter and receive exclusive deals and discounts directly to your inbox.</p>
+            
+            <div class="max-w-md mx-auto flex">
+                <input type="email" 
+                       placeholder="Your email address" 
+                       class="flex-grow p-3 rounded-l-lg focus:outline-none text-gray-800">
+                <button class="bg-blue-800 px-6 rounded-r-lg font-bold hover:bg-blue-900 transition">
+                    Subscribe
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <i class="fas fa-bus text-2xl"></i>
+                        <h3 class="text-xl font-bold">SwiftBus</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">Travel with comfort and safety across the country.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Home</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Services</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Routes</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">FAQs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms & Conditions</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Refund Policy</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-bold text-lg mb-4">Contact Us</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                            <span>123 Bus Street, Transport City, TC 12345</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone-alt mr-2"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>info@swiftbus.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 SwiftBus. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Seat Selection Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all seat elements
+            const seats = document.querySelectorAll('.seat:not(.booked)');
+            const selectedSeatsElement = document.getElementById('selectedSeats');
+            const fareAmountElement = document.getElementById('fareAmount');
+            const totalAmountElement = document.getElementById('totalAmount');
+            const seatModal = document.getElementById('seatModal');
+            const closeModal = document.getElementById('closeModal');
+            const viewSeatsButtons = document.querySelectorAll('button:contains("View Seats")');
+            
+            // Price per seat
+            const pricePerSeat = 45;
+            
+            // Initialize selected seats array
+            let selectedSeats = [];
+            
+            // Add click event to each seat
+            seats.forEach(seat => {
+                seat.addEventListener('click', function() {
+                    const seatNumber = this.textContent.trim();
+                    
+                    // Check if seat is already selected
+                    const seatIndex = selectedSeats.indexOf(seatNumber);
+                    
+                    if (seatIndex === -1) {
+                        // Add to selected
+                        this.classList.add('selected');
+                        selectedSeats.push(seatNumber);
+                    } else {
+                        // Remove from selected
+                        this.classList.remove('selected');
+                        selectedSeats.splice(seatIndex, 1);
+                    }
+                    
+                    // Update summary
+                    updateSummary();
+                });
+            });
+            
+            // Function to update booking summary
+            function updateSummary() {
+                const count = selectedSeats.length;
+                const total = count * pricePerSeat;
+                
+                if (count > 0) {
+                    selectedSeatsElement.textContent = selectedSeats.join(', ');
+                    fareAmountElement.textContent = `$${pricePerSeat} x ${count}`;
+                    totalAmountElement.textContent = `$${total}`;
+                } else {
+                    selectedSeatsElement.textContent = 'None';
+                    fareAmountElement.textContent = '$0';
+                    totalAmountElement.textContent = '$0';
+                }
+            }
+            
+            // Show modal when "View Seats" button is clicked
+            viewSeatsButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    seatModal.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            // Close modal
+            closeModal.addEventListener('click', function() {
+                seatModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Close modal when clicking outside
+            seatModal.addEventListener('click', function(e) {
+                if (e.target === seatModal) {
+                    seatModal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

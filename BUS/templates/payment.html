@@ -1,0 +1,36 @@
+<!-- templates/payment.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Payment</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+</head>
+<body class="bg-gray-100 p-6">
+  <div class="max-w-xl mx-auto bg-white rounded shadow p-6">
+    <h2 class="text-2xl font-bold mb-4">Payment Page</h2>
+
+    <p><strong>Passenger:</strong> {{ booking.passenger.Passenger_name }}</p>
+    <p><strong>Seat:</strong> {{ booking.seat.seat_number }}</p>
+    <p><strong>Date:</strong> {{ booking.date }}</p>
+    <p><strong>Time:</strong> {{ booking.time }}</p>
+    <p><strong>Bus:</strong> {{ booking.bus }}</p>
+
+    <hr class="my-4">
+
+    <form method="POST" action="{% url 'confirm_payment' booking.id %}">
+      {% csrf_token %}
+      <label class="block mb-2 font-semibold">Select Payment Method:</label>
+      <select name="method" class="border p-2 rounded w-full mb-4" required>
+        <option value="">-- Choose --</option>
+        <option value="KBZPay">KBZPay</option>
+        <option value="Wavepay">Wavepay</option>
+        <option value="Cash">Cash</option>
+      </select>
+
+      <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+        Pay Now
+      </button>
+    </form>
+  </div>
+</body>
+</html>
